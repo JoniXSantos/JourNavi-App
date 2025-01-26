@@ -2,13 +2,13 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from api.utils import generate_sitemap, APIException
 from api.models import db, Users
-from flask_jwt_extended import create_access_token
-from flask_jwt_extended import get_jwt_identity
-from flask_jwt_extended import jwt_required
 import re
+import cloudinary
+import cloudinary.uploader
 
 
 api = Blueprint('api', __name__)
@@ -47,7 +47,8 @@ def login():
     if not user:
         response_body['message'] = 'Email or password incorrect'
         return response_body, 401
-    access_token = create_access_token(identity={'email': user.email, 'user_id': user.id})
+    identity = f"{user.id}|{user.email}"
+    access_token = create_access_token(identity=identity)
     response_body['message'] = f'Welcome, {email}'
     response_body['access_token'] = access_token
     response_body['results'] = user.serialize()
@@ -55,9 +56,12 @@ def login():
 
 
 @api.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@jwt_required()
 def user(id):
     response_body = {}
-    row = db.session.execute(db.select(Users).where(Users.id == id)).scalar()
+    current_user = get_jwt_identity()
+    user_id, email = current_user.split('|')
+    row = Users.query.filter_by(id=user_id).first()
     if request.method == 'GET':
         response_body['message'] = f'This is the information about user no. {id}'
         response_body['results'] = row.serialize()
@@ -77,3 +81,34 @@ def user(id):
         response_body['message'] = 'Your account was deleted'
         response_body['results'] = {}
         return response_body, 200
+
+
+@api.route('/upload', methods=['POST'])
+def upload():
+    response_body = {}
+    file_to_upload = request.files.get('img')
+    if not file_to_upload:
+       response_body['message'] = 'Upload failed'
+       return response_body, 400
+    upload = cloudinary.uploader.upload(file_to_upload)
+    image_url = upload.get('url')
+    if image_url.startswith("http://"):
+        image_url = image_url.replace("http://", "https://")
+    response_body['message'] = 'The file was uploaded'
+    response_body['results'] = image_url
+    return response_body, 200
+
+
+@api.route('/profileimage', methods=['PATCH'])
+@jwt_required()
+def profileimage():
+    response_body = {}
+    current_user = get_jwt_identity()
+    user_id, email = current_user.split('|')
+    row = Users.query.filter_by(id=user_id).first()
+    data = request.json
+    row.picture = data.get('picture')
+    db.session.commit()
+    response_body['message'] = 'Your profile picture is updated'
+    response_body['results'] = row.serialize()
+    return response_body, 200

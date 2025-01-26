@@ -60,9 +60,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.removeItem('user');
 			},
 			getData: async (id) => {
+				const token = localStorage.getItem('token');
 				const uri = `${process.env.BACKEND_URL}/api/users/${id}`;
 				const options = {
-					method: 'GET'
+					method: 'GET',
+					headers: {
+						"Authorization": `Bearer ${token}`
+					}
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -72,11 +76,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ user: data.results });
 			},
 			editData: async (id, dataToSend) => {
+				const token = localStorage.getItem('token');
 				const uri = `${process.env.BACKEND_URL}/api/users/${id}`;
 				const options = {
 					method: 'PUT',
 					headers: {
-						"Content-Type": 'application/json'
+						"Content-Type": 'application/json',
+						"Authorization": `Bearer ${token}`
 					},
 					body: JSON.stringify(dataToSend)
 				};
@@ -90,9 +96,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				return true;
 			},
 			removeAccount: async (id) => {
+				const token = localStorage.getItem('token');
 				const uri = `${process.env.BACKEND_URL}/api/users/${id}`;
 				const options = {
-					method: 'DELETE'
+					method: 'DELETE',
+					headers: {
+						"Authorization": `Bearer ${token}`
+					}
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -101,6 +111,44 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const data = await response.json();
 				getActions().logout();
+				return true;
+			},
+			uploadImage: async (file) => {
+				const uri = `${process.env.BACKEND_URL}/api/upload`;
+				const form = new FormData();
+				form.append('img', file);
+				const options = {
+					method: 'POST',
+					body: form
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return false;
+				};
+				const data = await response.json();
+				getActions().changePicture(data.results);
+				return true;
+			},
+			changePicture: async (url) => {
+				const token = localStorage.getItem('token');
+				const user = JSON.parse(localStorage.getItem('user'));
+				const uri = `${process.env.BACKEND_URL}/api/profileimage`;
+				const options = {
+					method: 'PATCH',
+					headers: {
+						"Content-Type": 'application/json',
+						"Authorization": `Bearer ${token}`
+					},
+					body: JSON.stringify({ picture: url })
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return false;
+				};
+				const data = await response.json();
+				getActions().getData(user.id);
 				return true;
 			}
 		}

@@ -38,7 +38,7 @@ export const Navbar = ({ dark, setDark }) => {
 						:
 						<div className="btn-group">
 							<button type="button" className="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-								<img src={store.user.picture ? store.user.picture : NoPicture} className="me-3" style={{ width: '30px', borderRadius: '100%' }} alt="Profile Picture" />
+								<img src={store.user.picture ? store.user.picture : NoPicture} className="me-3 rounded-circle" style={{ width: '30px', height: '30px', objectFit: 'cover' }} alt="Profile Picture" />
 								{store.user.name ? store.user.name : store.user.email}
 							</button>
 							<ul className="dropdown-menu dropdown-menu-dark w-100 text-center">

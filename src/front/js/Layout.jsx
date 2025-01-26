@@ -42,7 +42,7 @@ const Layout = () => {
                         <Route element={<Login dark={dark} setDark={setDark} />} path="/login" />
                         <Route element={<ProtectedRoutes />}>
                             <Route element={<Profile />} path="/profile" />
-                            <Route element={<Settings />} path="/settings" />
+                            <Route element={<Settings dark={dark} setDark={setDark} />} path="/settings" />
                         </Route>
                         <Route element={<h1>Not found!</h1>} path="*"/>
                     </Routes>

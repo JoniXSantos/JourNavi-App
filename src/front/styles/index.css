@@ -40,6 +40,10 @@
     color: black;
 }
 
+.nav-link-dark {
+    color: white;
+}
+
 .nav-link:hover {
     color: #FE5558;
 }
