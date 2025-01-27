@@ -20,7 +20,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
-					setStore({ message: data.message })
+					setStore({ message: data.message });
 					return false;
 				}
 				await getActions().login(dataToSend);
@@ -149,6 +149,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const data = await response.json();
 				getActions().getData(user.id);
+				return true;
+			},
+			changePassword: async (dataToSend) => {
+				const token = localStorage.getItem('token');
+				const uri = `${process.env.BACKEND_URL}/api/password`;
+				const options = {
+					method: 'PATCH',
+					headers: {
+						"Content-Type": 'application/json',
+						"Authorization": `Bearer ${token}`
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					setStore({ message: data.message })
+					return false;
+				};
 				return true;
 			}
 		}
