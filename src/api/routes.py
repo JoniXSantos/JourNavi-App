@@ -112,3 +112,26 @@ def profileimage():
     response_body['message'] = 'Your profile picture is updated'
     response_body['results'] = row.serialize()
     return response_body, 200
+
+
+@api.route('/password', methods=['PATCH'])
+@jwt_required()
+def password():
+    response_body = {}
+    current_user = get_jwt_identity()
+    user_id, email = current_user.split('|')
+    row = Users.query.filter_by(id=user_id).first()
+    data = request.json
+    old_password = data.get('oldpassword')
+    new_password = data.get('password')
+    if old_password != row.password:
+        response_body['message'] = "The current password is not correct."
+        return response_body, 400
+    password_pattern = r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+    if not re.match(password_pattern, new_password):
+        response_body['message'] = "Please, follow the above requirements for the password format."
+        return response_body, 400
+    row.password = new_password
+    db.session.commit()
+    response_body['message'] = 'Your password is changed'
+    return response_body, 200
