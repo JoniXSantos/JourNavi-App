@@ -3,7 +3,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			message: null,
 			user: '',
-			isLogged: false
+			isLogged: false,
+			countries: [],
+			visitedCountries: [],
+			toVisitCountries: [],
+			favoriteCountries: []
 		},
 		actions: {
 			// Use getActions to call a function within a function
@@ -166,10 +170,47 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
-					setStore({ message: data.message })
+					setStore({ message: data.message });
 					return false;
 				};
 				return true;
+			},
+			getCountries: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/countries`;
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				setStore({ countries: data.results });
+				return data;
+			},
+			addToVisited: (item) => {
+				const updatedVisited = [...getStore().visitedCountries, item];
+				setStore({ visitedCountries: updatedVisited });
+			},
+			removeFromVisited: (item) => {
+				const updatedVisited = getStore().visitedCountries.filter(currentItem => currentItem.name !== item.name);
+				setStore({ visitedCountries: updatedVisited });
+			},
+			addToWishes: (item) => {
+				const updatedWishes = [...getStore().toVisitCountries, item];
+				setStore({ toVisitCountries: updatedWishes });
+			},
+			removeFromWishes: (item) => {
+				const updatedWishes = getStore().toVisitCountries.filter(currentItem => currentItem.name !== item.name);
+				setStore({ toVisitCountries: updatedWishes });
+			},
+			addToFavorites: (item) => {
+				const updatedFavorites = [...getStore().favoriteCountries, item];
+				setStore({ favoriteCountries: updatedFavorites });
+			},
+			removeFromFavorites: (item) => {
+				const updatedFavorites = getStore().favoriteCountries.filter(currentItem => currentItem.name !== item.name);
+				setStore({ favoriteCountries: updatedFavorites });
 			}
 		}
 	};

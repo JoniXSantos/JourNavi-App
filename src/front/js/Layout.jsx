@@ -12,6 +12,7 @@ import { Home } from "./pages/Home.jsx";
 import { Signup } from "./pages/Signup.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Profile } from "./pages/Profile.jsx";
+import { Countries } from "./pages/Countries.jsx";
 import { Settings } from "./pages/Settings.jsx";
 
 
@@ -37,11 +38,12 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar dark={dark} setDark={setDark} />
                     <Routes>
-                        <Route element={<Home />} path="/" />
+                        <Route element={<Home dark={dark} setDark={setDark} />} path="/" />
                         <Route element={<Signup dark={dark} setDark={setDark} />} path="/signup" />
                         <Route element={<Login dark={dark} setDark={setDark} />} path="/login" />
                         <Route element={<ProtectedRoutes />}>
                             <Route element={<Profile />} path="/profile" />
+                            <Route element={<Countries dark={dark} setDark={setDark} />} path="/countries" />
                             <Route element={<Settings dark={dark} setDark={setDark} />} path="/settings" />
                         </Route>
                         <Route element={<h1>Not found!</h1>} path="*"/>

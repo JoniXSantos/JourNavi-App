@@ -1,27 +1,13 @@
-import React, { useContext } from "react";
-import { Context } from "../store/appContext.js";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
+import React from "react";
 import "../../styles/home.css";
 
 
-export const Home = () => {
-	const { store, actions } = useContext(Context);
+export const Home = ({ dark, setDark }) => {
 
 	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
-			<p>
-				<img src={rigoImageUrl} />
-			</p>
-			<div className="alert alert-info">
-				{store.message || "Loading message from the backend (make sure your python backend is running)..."}
-			</div>
-			<p>
-				This boilerplate comes with lots of documentation:{" "}
-				<a href="https://start.4geeksacademy.com/starters/react-flask">
-					Read documentation
-				</a>
-			</p>
+		<div className="text-center">
+			<h2 className={dark ? 'text-dark' : ''} style={{ transform: 'translateY(180%)' }}>Come and live this adventure around the world!</h2>
+			<img className="mb-5" src="https://static.independent.co.uk/s3fs-public/thumbnails/image/2019/02/22/08/istock-866616238.jpg?quality=75&width=1250&crop=3%3A2%2Csmart&auto=webp" />
 		</div>
 	);
 };
