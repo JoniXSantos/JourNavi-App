@@ -21,6 +21,17 @@ export const Navbar = ({ dark, setDark }) => {
 						<span className="navbar-brand mb-0 ms-2 h1">JourNavi</span>
 					</div>
 				</Link>
+				{store.isLogged ?
+					<>
+						<span className="border-start border-dark mx-2" style={{ height: '40px', display: 'inline-block' }}></span>
+						<Link to="/countries" className="main-link ms-3 me-auto">
+							<div className="d-flex">
+								<span className="navbar-nav">Countries</span>
+							</div>
+						</Link>
+					</>
+					:
+					''}
 				<div className="">
 					<div className="btn-group me-2">
 						<button type="button" className="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

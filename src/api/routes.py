@@ -5,10 +5,11 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from api.utils import generate_sitemap, APIException
-from api.models import db, Users
+from api.models import db, Users, Countries
 import re
 import cloudinary
 import cloudinary.uploader
+import requests
 
 
 api = Blueprint('api', __name__)
@@ -134,4 +135,37 @@ def password():
     row.password = new_password
     db.session.commit()
     response_body['message'] = 'Your password is changed'
+    return response_body, 200
+
+
+@api.route('/countries', methods=['GET'])
+def countries():
+    response_body = {}
+    rows = db.session.execute(db.select(Countries)).scalars()
+    result = [row.serialize() for row in rows]
+    if len(result) == 0:
+        url = 'https://restcountries.com/v3.1/all/'
+        response = requests.get(url)
+        if response.status_code != 200:
+            response_body['message'] = 'Error fetching data from REST Countries API'
+            return response_body, 502 
+        data = response.json()
+        for country_data in data:
+            new_country = Countries(name=country_data['name']['common'],
+                                    code=country_data.get('cca2'),
+                                    flag=country_data['flags']['png'],
+                                    capital=country_data.get['capital'][0] if 'capital' in country_data else None,
+                                    languages=', '.join(country_data['languages'].values()),
+                                    currency=', '.join([currency_info['name'] for currency_info in country_data['currencies'].values()]),
+                                    population=country_data.get('population'),
+                                    continents=', '.join(country_data['continents']),
+                                    region=country_data.get('region'),
+                                    subregion=country_data.get('subregion', ''),
+                                    timezones=', '.join(country_data['timezones']))
+            db.session.add(new_country)
+            db.session.commit()
+            rows = db.session.execute(db.select(Countries)).scalars()
+            result = [row.serialize() for row in rows]
+    response_body['message'] = 'List of the countries (GET)'
+    response_body['results'] = result
     return response_body, 200
