@@ -24,9 +24,14 @@ export const Navbar = ({ dark, setDark }) => {
 				{store.isLogged ?
 					<>
 						<span className="border-start border-dark mx-2" style={{ height: '40px', display: 'inline-block' }}></span>
-						<Link to="/countries" className="main-link ms-3 me-auto">
+						<Link to="/countries" className="main-link ms-3">
 							<div className="d-flex">
 								<span className="navbar-nav">Countries</span>
+							</div>
+						</Link>
+						<Link to="/posts" className="main-link ms-4 me-auto">
+							<div className="d-flex">
+								<span className="navbar-nav">Posts</span>
 							</div>
 						</Link>
 					</>

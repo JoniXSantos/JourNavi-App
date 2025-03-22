@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timezone
 
 
 db = SQLAlchemy()
@@ -55,3 +56,42 @@ class Countries(db.Model):
                 'region': self.region,
                 'subregion': self.subregion,
                 'timezones': self.timezones}
+
+
+class Posts(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(), unique=False, nullable=False)
+    description = db.Column(db.String(), unique=False, nullable=False)
+    date = db.Column(db.DateTime(), nullable=False, default=datetime.now(tz=timezone.utc))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('post_to', lazy='select'))
+
+    def __repr__(self):
+        return f'<Post {self.id} - {self.title}>'
+
+    def serialize(self):
+        return {'id': self.id,
+                'title': self.title,
+                'description': self.description,
+                'date': self.date,
+                'user_id': self.user_id}
+
+
+class Comments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(), unique=False, nullable=False)
+    date = db.Column(db.DateTime(), nullable=False, default=datetime.now(tz=timezone.utc))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('comment_to', lazy='select'))
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    post_to = db.relationship('Posts', foreign_keys=[post_id], backref=db.backref('comment_to', lazy='select'))
+
+    def __repr__(self):
+        return f'<Comment {self.id} - Post {self.post_id}>'
+
+    def serialize(self):
+        return {'id': self.id,
+                'content': self.content,
+                'date': self.date,
+                'user_id': self.user_id,
+                'post_id': self.post_id}

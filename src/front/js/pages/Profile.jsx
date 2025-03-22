@@ -6,6 +6,8 @@ export const Profile = () => {
     const { store } = useContext(Context);
 
     return (
-        <h1>Nothing yet.</h1>
+        <div>
+            <p><b>This page is currently unavailable.</b></p>
+        </div>
     )
 }
