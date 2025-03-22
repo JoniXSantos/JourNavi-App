@@ -13,6 +13,7 @@ import { Signup } from "./pages/Signup.jsx";
 import { Login } from "./pages/Login.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { Countries } from "./pages/Countries.jsx";
+import { Posts } from "./pages/Posts.jsx";
 import { Settings } from "./pages/Settings.jsx";
 
 
@@ -44,6 +45,7 @@ const Layout = () => {
                         <Route element={<ProtectedRoutes />}>
                             <Route element={<Profile />} path="/profile" />
                             <Route element={<Countries dark={dark} setDark={setDark} />} path="/countries" />
+                            <Route element={<Posts dark={dark} setDark={setDark} />} path="/posts" />
                             <Route element={<Settings dark={dark} setDark={setDark} />} path="/settings" />
                         </Route>
                         <Route element={<h1>Not found!</h1>} path="*"/>
