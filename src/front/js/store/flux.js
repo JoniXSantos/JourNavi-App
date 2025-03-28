@@ -7,7 +7,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			countries: [],
 			visitedCountries: [],
 			toVisitCountries: [],
-			favoriteCountries: []
+			favoriteCountries: [],
+			posts: [],
+			userPosts: [],
+			currentPost: [],
+			postComments: []
 		},
 		actions: {
 			// Use getActions to call a function within a function
@@ -211,6 +215,138 @@ const getState = ({ getStore, getActions, setStore }) => {
 			removeFromFavorites: (item) => {
 				const updatedFavorites = getStore().favoriteCountries.filter(currentItem => currentItem.name !== item.name);
 				setStore({ favoriteCountries: updatedFavorites });
+			},
+			getPosts: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/posts`;
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				setStore({ posts: data.results });
+				return data;
+			},
+			getUserPosts: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/users/${id}/posts`;
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				setStore({ userPosts: data.results });
+				return data;
+			},
+			createPost: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/posts`;
+				const options = {
+					method: 'POST'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				getActions().getPosts();
+				return data.results;
+			},
+			getPost: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/posts/${id}`;
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				setStore({ currentPost: data.results });
+				return data.results;
+			},
+			editPost: async (id, dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/api/posts/${id}`;
+				const options = {
+					method: 'PUT',
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				setStore({ currentPost: data.results });
+				return data.results;
+			},
+			removePost: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/posts/${id}`;
+				const options = {
+					method: 'DELETE'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				getActions().getPosts();
+				return true;
+			},
+			getComments: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/posts/${id}/comments`;
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				setStore({ postComments: data.results });
+				return data.results;
+			},
+			addComment: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/posts/${id}/comments`;
+				const options = {
+					method: 'POST'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				getActions().getComments();
+				return data.results;
+			},
+			editComment: async (id, dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/api/comments/${id}`;
+				const options = {
+					method: 'PUT',
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				getActions().getComments();
+				return data.results;
+			},
+			removeComment: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/comments/${id}`;
+				const options = {
+					method: 'DELETE'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				getActions().getComments();
+				return true;
 			}
 		}
 	};

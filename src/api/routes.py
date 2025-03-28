@@ -149,6 +149,7 @@ def countries():
         response = requests.get(url)
         if response.status_code != 200:
             response_body['message'] = 'Error fetching data from REST Countries API'
+            response_body['results'] = {}
             return response_body, 502 
         data = response.json()
         for country_data in data:
@@ -182,7 +183,7 @@ def posts():
     if request.method == 'GET':
         result = [row.serialize() for row in rows]
         response_body['message'] = 'List of the posts'
-        response_body['result'] = result
+        response_body['results'] = result
         return response_body, 200
     if request.method == 'POST':
         data = request.json
@@ -193,7 +194,7 @@ def posts():
         db.session.add(row)
         db.session.commit()
         response_body['message'] = 'A new post is created'
-        response_body['result'] = row.serialize()
+        response_body['results'] = row.serialize()
         return response_body, 200
 
 
@@ -213,16 +214,16 @@ def post(id):
     row = db.session.execute(db.select(Posts)).where(Posts.id == id).scalar()
     if not row:
         response_body['message'] = 'This post does not exist'
-        response_body['result'] = {}
+        response_body['results'] = {}
         return response_body, 404
     if request.method == 'GET':
         response_body['message'] = f'This is the post no. {id}'
-        response_body['result'] = row.serialize()
+        response_body['results'] = row.serialize()
         return response_body, 200
     current_user = get_jwt_identity()
     if row.user_id != current_user['user_id']:
         response_body['message'] = f'You cannot change the post no. {id}'
-        response_body['result'] = {}
+        response_body['results'] = {}
         return response_body, 404
     if request.method == 'PUT':
         data = request.json
@@ -230,28 +231,29 @@ def post(id):
         row.description = data.get('description')
         db.session.commit()
         response_body['message'] = f'The post no. {id} is updated'
-        response_body['result'] = row.serialize()
+        response_body['results'] = row.serialize()
         return response_body, 200
     if request.method == 'DELETE':
         db.session.delete(db.delete(Comments).where(Comments.post_id == id))
         db.session.delete(row)
         db.session.commit()
         response_body['message'] = f'The post no. {id} no longer exists'
-        response_body['result'] = {}
+        response_body['results'] = {}
         return response_body, 200
 
 
-@api.route('/comments', methods=['GET', 'POST'])
+@api.route('/posts/<int:id>/comments', methods=['GET', 'POST'])
 def comments(id):
     response_body = {}
     rows = db.session.execute(db.select(Comments)).where(Comments.post_id == id).scalars()
     if not rows:
         response_body['message'] = 'No comments yet'
+        response_body['results'] = {}
         return response_body, 404
     if request.method == 'GET':
         result = [row.serialize() for row in rows]
         response_body['message'] = 'List of the comments'
-        response_body['result'] = result
+        response_body['results'] = result
         return response_body, 200
     if request.method == 'POST':
         data = request.json
@@ -262,42 +264,34 @@ def comments(id):
         db.session.add(row)
         db.session.commit()
         response_body['message'] = 'A new comment is posted'
-        response_body['result'] = row.serialize()
+        response_body['results'] = row.serialize()
         return response_body, 200
 
 
-@api.route('/comments/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@api.route('/comments/<int:id>', methods=['PUT', 'DELETE'])
 def comment(id):
     response_body = {}
     row = db.session.execute(db.select(Comments)).where(Comments.id == id).scalar()
     post_row = db.session.execute(db.select(Posts)).where(Posts.id == row.post_id).scalar()
-    if not row:
-        response_body['message'] = 'This comment does not exist'
-        response_body['result'] = {}
-        return response_body, 404
-    if request.method == 'GET':
-        response_body['message'] = f'This is the comment no. {id}'
-        response_body['result'] = row.serialize()
-        return response_body, 200
     current_user = get_jwt_identity()
     if request.method == 'PUT':
         if row.user_id != current_user['user_id']:
             response_body['message'] = f'You cannot change the comment no. {id}'
-            response_body['result'] = {}
+            response_body['results'] = {}
             return response_body, 404
         data = request.json
         row.content = data.get('content')
         db.session.commit()
         response_body['message'] = f'The comment no. {id} is updated'
-        response_body['result'] = row.serialize()
+        response_body['results'] = row.serialize()
         return response_body, 200
     if request.method == 'DELETE':
         if row.user_id != current_user['user_id'] or post_row.user_id != current_user['user_id']:
             response_body['message'] = f'You cannot delete the comment no. {id}'
-            response_body['result'] = {}
+            response_body['results'] = {}
             return response_body, 404
         db.session.delete(row)
         db.session.commit()
         response_body['message'] = f'The comment no. {id} no longer exists'
-        response_body['result'] = {}
+        response_body['results'] = {}
         return response_body, 200
