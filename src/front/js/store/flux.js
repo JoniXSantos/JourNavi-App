@@ -8,10 +8,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			visitedCountries: [],
 			toVisitCountries: [],
 			favoriteCountries: [],
+			users: [],
 			posts: [],
 			userPosts: [],
 			currentPost: [],
-			postComments: []
+			comments: []
 		},
 		actions: {
 			// Use getActions to call a function within a function
@@ -66,6 +67,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ isLogged: false, user: '' });
 				localStorage.removeItem('token');
 				localStorage.removeItem('user');
+			},
+			getUsers: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/users`;
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				setStore({ users: data.results });
+				return data;
 			},
 			getData: async (id) => {
 				const token = localStorage.getItem('token');
@@ -295,8 +309,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getPosts();
 				return true;
 			},
-			getComments: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/api/posts/${id}/comments`;
+			getComments: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/comments`;
 				const options = {
 					method: 'GET'
 				};
@@ -305,7 +319,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
 				};
-				setStore({ postComments: data.results });
+				setStore({ comments: data.results });
 				return data.results;
 			},
 			addComment: async (id) => {

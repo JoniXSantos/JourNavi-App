@@ -57,6 +57,16 @@ def login():
     return response_body, 200
 
 
+@api.route('/users', methods=['GET'])
+def users():
+    response_body = {}
+    rows = db.session.execute(db.select(Users)).scalars()
+    result = [row.serialize() for row in rows]
+    response_body['message'] = 'List of the users'
+    response_body['results'] = result
+    return response_body, 200
+
+
 @api.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 @jwt_required()
 def user(id):
@@ -242,10 +252,10 @@ def post(id):
         return response_body, 200
 
 
-@api.route('/posts/<int:id>/comments', methods=['GET', 'POST'])
-def comments(id):
+@api.route('/comments', methods=['GET', 'POST'])
+def comments():
     response_body = {}
-    rows = db.session.execute(db.select(Comments)).where(Comments.post_id == id).scalars()
+    rows = db.session.execute(db.select(Comments)).scalars()
     if not rows:
         response_body['message'] = 'No comments yet'
         response_body['results'] = {}
