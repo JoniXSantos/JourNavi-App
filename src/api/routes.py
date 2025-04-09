@@ -199,7 +199,7 @@ def posts():
         data = request.json
         row = Posts(title = data.get('title'),
                     description = data.get('description'),
-                    data = datetime.now(),
+                    date = datetime.now(),
                     user_id = data.get('user_id'))
         db.session.add(row)
         db.session.commit()

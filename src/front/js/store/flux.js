@@ -256,10 +256,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ userPosts: data.results });
 				return data;
 			},
-			createPost: async () => {
+			createPost: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/posts`;
 				const options = {
-					method: 'POST'
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
 				const data = await response.json();
@@ -286,6 +290,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const uri = `${process.env.BACKEND_URL}/api/posts/${id}`;
 				const options = {
 					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
 					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
@@ -322,10 +329,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ comments: data.results });
 				return data.results;
 			},
-			addComment: async (id) => {
+			addComment: async (id, dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/posts/${id}/comments`;
 				const options = {
-					method: 'POST'
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
 				const data = await response.json();
@@ -339,6 +350,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const uri = `${process.env.BACKEND_URL}/api/comments/${id}`;
 				const options = {
 					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
 					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
