@@ -329,8 +329,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ comments: data.results });
 				return data.results;
 			},
-			addComment: async (id, dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/api/posts/${id}/comments`;
+			addComment: async (dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/api/comments`;
 				const options = {
 					method: 'POST',
 					headers: {

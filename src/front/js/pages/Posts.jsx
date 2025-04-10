@@ -54,8 +54,8 @@ export const Posts = ({ dark, setDark }) => {
                         </div>
                         <form onSubmit={handleSubmit}>
                             <div className={`modal-body ${dark ? 'bg-black' : ''}`}>
-                                <input className={`mb-2 ps-3 ${dark ? 'bg-dark text-white' : ''}`} value={title} onChange={e => setTitle(e.target.value)} style={{width: '100%', height: '5vh', border: 'thin solid #D3D3D3'}} placeholder="Title" required />
-                                <textarea className={`mb-2 px-3 ${dark ? 'bg-dark text-white' : ''}`} value={description} onChange={e => setDescription(e.target.value)} style={{width: '100%', height: '20vh', border: 'thin solid #D3D3D3'}} placeholder="Description" required />
+                                <input className={`mb-2 ps-3 w-100 ${dark ? 'bg-dark text-white border-0' : ''}`} value={title} onChange={e => setTitle(e.target.value)} style={{height: '5vh', border: 'thin solid #D3D3D3'}} placeholder="Title" required />
+                                <textarea className={`mb-2 px-3 w-100 ${dark ? 'bg-dark text-white border-0' : ''}`} value={description} onChange={e => setDescription(e.target.value)} style={{height: '20vh', border: 'thin solid #D3D3D3'}} placeholder="Description" required />
                             </div>
                             <div className="modal-footer" style={{ background: '#FE5558' }}>
                                 <button type="button" onClick={handleReset} className="btn btn-secondary me-2">
@@ -69,7 +69,7 @@ export const Posts = ({ dark, setDark }) => {
                     </div>
                 </div>
             </div>
-            {posts.length === 0 ? '' : posts.map((item, index) => {
+            {posts.length === 0 ? '' : posts.slice().reverse().map((item, index) => {
                 const user = users.find(user => user.id === item.user_id)
                 const postComments = comments.filter(comment => comment.post_id === item.id)
                 
