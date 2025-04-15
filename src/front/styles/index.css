@@ -46,6 +46,7 @@
 
 .nav-link:hover {
     color: #FE5558;
+    cursor: pointer;
 }
 
 .nav-link.active {
@@ -60,4 +61,10 @@
 .main-link:hover {
     color: black;
     text-decoration: underline;
+    cursor: pointer;
+}
+
+.icon-button:hover {
+    color: red;
+    cursor: pointer;
 }

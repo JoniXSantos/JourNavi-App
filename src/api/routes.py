@@ -208,20 +208,10 @@ def posts():
         return response_body, 200
 
 
-@api.route('/users/<int:id>/posts', methods=['GET'])
-def posts_by_user(id):
-    response_body = {}
-    rows = db.session.execute(db.select(Posts)).where(Posts.user_id == id).scalars()
-    result = [row.serialize() for row in rows]
-    response_body['message'] = f'List of the posts written by user no. {id}'
-    response_body['results'] = result
-    return response_body, 200
-
-
-@api.route('/posts/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@api.route('/posts/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
 def post(id):
     response_body = {}
-    row = db.session.execute(db.select(Posts)).where(Posts.id == id).scalar()
+    row = db.session.execute(db.select(Posts).where(Posts.id == id)).scalar()
     if not row:
         response_body['message'] = 'This post does not exist'
         response_body['results'] = {}
@@ -230,21 +220,15 @@ def post(id):
         response_body['message'] = f'This is the post no. {id}'
         response_body['results'] = row.serialize()
         return response_body, 200
-    current_user = get_jwt_identity()
-    if row.user_id != current_user['user_id']:
-        response_body['message'] = f'You cannot change the post no. {id}'
-        response_body['results'] = {}
-        return response_body, 404
-    if request.method == 'PUT':
+    if request.method == 'PATCH':
         data = request.json
-        row.title = data.get('title')
         row.description = data.get('description')
         db.session.commit()
         response_body['message'] = f'The post no. {id} is updated'
         response_body['results'] = row.serialize()
         return response_body, 200
     if request.method == 'DELETE':
-        db.session.delete(db.delete(Comments).where(Comments.post_id == id))
+        db.session.execute(db.delete(Comments).where(Comments.post_id == id))
         db.session.delete(row)
         db.session.commit()
         response_body['message'] = f'The post no. {id} no longer exists'
@@ -278,30 +262,12 @@ def comments():
         return response_body, 200
 
 
-@api.route('/comments/<int:id>', methods=['PUT', 'DELETE'])
+@api.route('/comments/<int:id>', methods=['DELETE'])
 def comment(id):
     response_body = {}
-    row = db.session.execute(db.select(Comments)).where(Comments.id == id).scalar()
-    post_row = db.session.execute(db.select(Posts)).where(Posts.id == row.post_id).scalar()
-    current_user = get_jwt_identity()
-    if request.method == 'PUT':
-        if row.user_id != current_user['user_id']:
-            response_body['message'] = f'You cannot change the comment no. {id}'
-            response_body['results'] = {}
-            return response_body, 404
-        data = request.json
-        row.content = data.get('content')
-        db.session.commit()
-        response_body['message'] = f'The comment no. {id} is updated'
-        response_body['results'] = row.serialize()
-        return response_body, 200
-    if request.method == 'DELETE':
-        if row.user_id != current_user['user_id'] or post_row.user_id != current_user['user_id']:
-            response_body['message'] = f'You cannot delete the comment no. {id}'
-            response_body['results'] = {}
-            return response_body, 404
-        db.session.delete(row)
-        db.session.commit()
-        response_body['message'] = f'The comment no. {id} no longer exists'
-        response_body['results'] = {}
-        return response_body, 200
+    row = db.session.execute(db.select(Comments).where(Comments.id == id)).scalar()
+    db.session.delete(row)
+    db.session.commit()
+    response_body['message'] = f'The comment no. {id} no longer exists'
+    response_body['results'] = {}
+    return response_body, 200
