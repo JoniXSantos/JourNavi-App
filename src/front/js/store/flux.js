@@ -8,10 +8,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			visitedCountries: [],
 			toVisitCountries: [],
 			favoriteCountries: [],
+			users: [],
 			posts: [],
 			userPosts: [],
 			currentPost: [],
-			postComments: []
+			comments: []
 		},
 		actions: {
 			// Use getActions to call a function within a function
@@ -66,6 +67,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ isLogged: false, user: '' });
 				localStorage.removeItem('token');
 				localStorage.removeItem('user');
+			},
+			getUsers: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/users`;
+				const options = {
+					method: 'GET'
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				setStore({ users: data.results });
+				return data;
 			},
 			getData: async (id) => {
 				const token = localStorage.getItem('token');
@@ -229,23 +243,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ posts: data.results });
 				return data;
 			},
-			getUserPosts: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/api/users/${id}/posts`;
-				const options = {
-					method: 'GET'
-				};
-				const response = await fetch(uri, options);
-				const data = await response.json();
-				if (!response.ok) {
-					console.log('Error', response.status, response.statusText);
-				};
-				setStore({ userPosts: data.results });
-				return data;
-			},
-			createPost: async () => {
+			createPost: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/posts`;
 				const options = {
-					method: 'POST'
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
 				const data = await response.json();
@@ -271,7 +276,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			editPost: async (id, dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/posts/${id}`;
 				const options = {
-					method: 'PUT',
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json'
+					},
 					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
@@ -280,6 +288,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log('Error', response.status, response.statusText);
 				};
 				setStore({ currentPost: data.results });
+				getActions().getPosts();
 				return data.results;
 			},
 			removePost: async (id) => {
@@ -295,8 +304,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getPosts();
 				return true;
 			},
-			getComments: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/api/posts/${id}/comments`;
+			getComments: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/comments`;
 				const options = {
 					method: 'GET'
 				};
@@ -305,26 +314,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
 				};
-				setStore({ postComments: data.results });
+				setStore({ comments: data.results });
 				return data.results;
 			},
-			addComment: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/api/posts/${id}/comments`;
+			addComment: async (dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/api/comments`;
 				const options = {
-					method: 'POST'
-				};
-				const response = await fetch(uri, options);
-				const data = await response.json();
-				if (!response.ok) {
-					console.log('Error', response.status, response.statusText);
-				};
-				getActions().getComments();
-				return data.results;
-			},
-			editComment: async (id, dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/api/comments/${id}`;
-				const options = {
-					method: 'PUT',
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
 					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
