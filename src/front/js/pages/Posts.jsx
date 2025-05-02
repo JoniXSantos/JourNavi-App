@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { Pagination } from "../component/Pagination.jsx";
 
 
 export const Posts = ({ dark, setDark }) => {
@@ -10,7 +11,11 @@ export const Posts = ({ dark, setDark }) => {
     const comments = store.comments;
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const navigate = useNavigate();
+    const postsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+    const lastPostIndex = currentPage * postsPerPage;
+    const firstPostIndex = lastPostIndex - postsPerPage;
+    const currentPosts = posts.slice().reverse().slice(firstPostIndex, lastPostIndex);
 
     const dateFormat = (dateString) => {
         const date = new Date(dateString);
@@ -30,6 +35,8 @@ export const Posts = ({ dark, setDark }) => {
 			const bootstrapModal = window.bootstrap.Modal.getInstance(modal);
 			if (bootstrapModal) bootstrapModal.hide();
 		}
+        setTitle('');
+        setDescription('');
     }
 
     const handleReset = () => {
@@ -69,7 +76,7 @@ export const Posts = ({ dark, setDark }) => {
                     </div>
                 </div>
             </div>
-            {posts.length === 0 ? '' : posts.slice().reverse().map((item, index) => {
+            {currentPosts.length === 0 ? '' : currentPosts.map((item, index) => {
                 const user = users.find(user => user.id === item.user_id)
                 const postComments = comments.filter(comment => comment.post_id === item.id)
                 
@@ -91,6 +98,13 @@ export const Posts = ({ dark, setDark }) => {
                     </div>
                 )
             })}
+            <Pagination 
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalPosts = {posts.length}
+                postsPerPage={postsPerPage}
+                dark={dark}
+            />
         </div>
     )
 }
