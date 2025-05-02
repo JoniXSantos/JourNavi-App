@@ -68,3 +68,23 @@
     color: red;
     cursor: pointer;
 }
+
+.page-link {
+    color: #FE5558;
+}
+
+.page-link:hover {
+    background-color: lightpink;
+    color: white;
+    cursor: pointer;
+}
+
+.page-item.active .page-link {
+    background-color: #FE5558;
+    border-color: lightgray;
+}
+
+.page-item.active .page-link:hover {
+    background-color: lightpink;
+    cursor: pointer;
+}
