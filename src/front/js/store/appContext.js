@@ -31,7 +31,7 @@ const injectContext = PassedComponent => {
 		*/
 		useEffect(() => {
 			state.actions.isLogged();
-			// state.actions.getCountries();
+			state.actions.getCountries();
 			state.actions.getUsers();
 			state.actions.getPosts();
 			state.actions.getComments();
