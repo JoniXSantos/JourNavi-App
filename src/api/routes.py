@@ -166,8 +166,8 @@ def countries():
             new_country = Countries(name=country_data['name']['common'],
                                     code=country_data.get('cca2'),
                                     flag=country_data['flags']['png'],
-                                    capital=country_data.get['capital'][0] if 'capital' in country_data else None,
-                                    languages=', '.join(country_data['languages'].values()),
+                                    capital = country_data.get('capital', [None])[0],
+                                    languages=', '.join(country_data.get('languages', {}).values()),
                                     currency=', '.join([currency_info['name'] for currency_info in country_data['currencies'].values()]),
                                     population=country_data.get('population'),
                                     continents=', '.join(country_data['continents']),
@@ -181,6 +181,84 @@ def countries():
     response_body['message'] = 'List of the countries (GET)'
     response_body['results'] = result
     return response_body, 200
+
+
+@api.route('/visited-countries', methods=['PATCH', 'DELETE'])
+@jwt_required()
+def visited_countries():
+    response_body = {}
+    current_user = get_jwt_identity()
+    user_id, email = current_user.split('|')
+    row = Users.query.filter_by(id=user_id).first()
+    country = request.json.get('country')
+    if row.visited_countries is None:
+        row.visited_countries = []
+    if request.method == 'PATCH':
+        if country not in row.visited_countries:
+            row.visited_countries.append(country)
+        db.session.commit()
+        response_body['message'] = 'A new country was added to the visited list.'
+        response_body['results'] = row.serialize()
+        return response_body, 200
+    if request.method == 'DELETE':
+        if country in row.visited_countries:
+            row.visited_countries.remove(country)
+        db.session.commit()
+        response_body['message'] = 'The country was deleted from the visited list.'
+        response_body['results'] = row.serialize()
+        return response_body, 200
+
+
+@api.route('/favorite-countries', methods=['PATCH', 'DELETE'])
+@jwt_required()
+def favorite_countries():
+    response_body = {}
+    current_user = get_jwt_identity()
+    user_id, email = current_user.split('|')
+    row = Users.query.filter_by(id=user_id).first()
+    country = request.json.get('country')
+    if row.favorite_countries is None:
+        row.favorite_countries = []
+    if request.method == 'PATCH':
+        if country not in row.favorite_countries:
+            row.favorite_countries.append(country)
+        db.session.commit()
+        response_body['message'] = 'A new country was added to the favorites.'
+        response_body['results'] = row.serialize()
+        return response_body, 200
+    if request.method == 'DELETE':
+        if country in row.favorite_countries:
+            row.favorite_countries.remove(country)
+        db.session.commit()
+        response_body['message'] = 'The country was deleted from the favorites.'
+        response_body['results'] = row.serialize()
+        return response_body, 200
+
+
+@api.route('/to-visit-countries', methods=['PATCH', 'DELETE'])
+@jwt_required()
+def to_visit_countries():
+    response_body = {}
+    current_user = get_jwt_identity()
+    user_id, email = current_user.split('|')
+    row = Users.query.filter_by(id=user_id).first()
+    country = request.json.get('country')
+    if row.to_visit_countries is None:
+        row.to_visit_countries = []
+    if request.method == 'PATCH':
+        if country not in row.to_visit_countries:
+            row.to_visit_countries.append(country)
+        db.session.commit()
+        response_body['message'] = 'A new country was added to the wish list.'
+        response_body['results'] = row.serialize()
+        return response_body, 200
+    if request.method == 'DELETE':
+        if country in row.to_visit_countries:
+            row.to_visit_countries.remove(country)
+        db.session.commit()
+        response_body['message'] = 'The country was deleted from the wish list.'
+        response_body['results'] = row.serialize()
+        return response_body, 200
 
 
 @api.route('/posts', methods=['GET', 'POST'])

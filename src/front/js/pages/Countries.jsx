@@ -1,10 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext.js";
 
 
 export const Countries = ({ dark, setDark }) => {
     const { store, actions } = useContext(Context);
+    const user = store.user.id
     const [countries, setCountries] = useState([...store.countries].sort((a, b) => a.name.localeCompare(b.name)));
+
+    useEffect(() => {
+                actions.getData(user);
+            }, []);
 
     return (
         <div className="container mt-3">
@@ -16,9 +21,9 @@ export const Countries = ({ dark, setDark }) => {
                         Filter
                     </button>
                     <ul className="dropdown-menu dropdown-menu-dark w-100 text-center">
-                        <li onClick={() => setCountries([...store.toVisitCountries].sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Wish to visit</span></li>
-                        <li onClick={() => setCountries([...store.visitedCountries].sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Already visited</span></li>
-                        <li onClick={() => setCountries([...store.favoriteCountries].sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Favorites</span></li>
+                        <li onClick={() => setCountries(store.countries.filter(c => store.toVisitCountries.includes(c.name)).sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Wish to visit</span></li>
+                        <li onClick={() => setCountries(store.countries.filter(c => store.visitedCountries.includes(c.name)).sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Already visited</span></li>
+                        <li onClick={() => setCountries(store.countries.filter(c => store.favoriteCountries.includes(c.name)).sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Favorites</span></li>
                         <li onClick={() => setCountries([...store.countries].sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Clear</span></li>
                     </ul>
                 </div>
@@ -94,9 +99,9 @@ export const Countries = ({ dark, setDark }) => {
                                 </div>
                             </div>
                             <div className="mt-4">
-                                <button type="button" title="Will Visit" className={`btn me-2 ${dark ? 'btn-light' : 'btn-dark'}`} onClick={!store.toVisitCountries.map(fav => fav.name).includes(item.name) ? () => actions.addToWishes(item) : () => actions.removeFromWishes(item)}><i className={`fa-solid fa-heart ${store.toVisitCountries.map(wish => wish.name).includes(item.name) ? 'text-danger' : ''}`}></i></button>
-                                <button type="button" title="Visited" className={`btn me-2 ${dark ? 'btn-light' : 'btn-dark'}`} onClick={!store.visitedCountries.map(fav => fav.name).includes(item.name) ? () => actions.addToVisited(item) : () => actions.removeFromVisited(item)}><i className={`fa-solid fa-check ${store.visitedCountries.map(vis => vis.name).includes(item.name) ? 'text-success' : ''}`}></i></button>
-                                <button type="button" title="Favorite" className={`btn ${dark ? 'btn-light' : 'btn-dark'}`} onClick={!store.favoriteCountries.map(fav => fav.name).includes(item.name) ? () => actions.addToFavorites(item) : () => actions.removeFromFavorites(item)}><i className={`fa-solid fa-star ${store.favoriteCountries.map(fav => fav.name).includes(item.name) ? 'text-warning' : ''}`}></i></button>
+                                <button type="button" title="Will Visit" className={`btn me-2 ${dark ? 'btn-light' : 'btn-dark'}`} onClick={!store.toVisitCountries.includes(item.name) ? () => actions.addToWishes(item.name) : () => actions.removeFromWishes(item.name)}><i className={`fa-solid fa-heart ${store.toVisitCountries.includes(item.name) ? 'text-danger' : ''}`}></i></button>
+                                <button type="button" title="Visited" className={`btn me-2 ${dark ? 'btn-light' : 'btn-dark'}`} onClick={!store.visitedCountries.includes(item.name) ? () => actions.addToVisited(item.name) : () => actions.removeFromVisited(item.name)}><i className={`fa-solid fa-check ${store.visitedCountries.includes(item.name) ? 'text-success' : ''}`}></i></button>
+                                <button type="button" title="Favorite" className={`btn ${dark ? 'btn-light' : 'btn-dark'}`} onClick={!store.favoriteCountries.includes(item.name) ? () => actions.addToFavorites(item.name) : () => actions.removeFromFavorites(item.name)}><i className={`fa-solid fa-star ${store.favoriteCountries.includes(item.name) ? 'text-warning' : ''}`}></i></button>
                             </div>
                         </div>
                     </div>

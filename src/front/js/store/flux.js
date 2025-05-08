@@ -6,8 +6,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isLogged: false,
 			countries: [],
 			visitedCountries: [],
-			toVisitCountries: [],
 			favoriteCountries: [],
+			toVisitCountries: [],
 			users: [],
 			posts: [],
 			userPosts: [],
@@ -95,7 +95,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log('Error', response.status, response.statusText);
 				};
 				const data = await response.json();
-				setStore({ user: data.results });
+				setStore({
+					user: data.results,
+					visitedCountries: data.results.visited_countries,
+					favoriteCountries: data.results.favorite_countries,
+					toVisitCountries: data.results.to_visit_countries
+				});
 			},
 			editData: async (id, dataToSend) => {
 				const token = localStorage.getItem('token');
@@ -206,29 +211,125 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ countries: data.results });
 				return data;
 			},
-			addToVisited: (item) => {
-				const updatedVisited = [...getStore().visitedCountries, item];
+			addToVisited: async (country) => {
+				const token = localStorage.getItem('token');
+				const uri = `${process.env.BACKEND_URL}/api/visited-countries`;
+				const options = {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+						"Authorization": `Bearer ${token}`
+					},
+					body: JSON.stringify({ country })
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				const updatedVisited = data.results.visited_countries;
 				setStore({ visitedCountries: updatedVisited });
+				return;
 			},
-			removeFromVisited: (item) => {
-				const updatedVisited = getStore().visitedCountries.filter(currentItem => currentItem.name !== item.name);
+			removeFromVisited: async (country) => {
+				const token = localStorage.getItem('token');
+				const uri = `${process.env.BACKEND_URL}/api/visited-countries`;
+				const options = {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+						"Authorization": `Bearer ${token}`
+					},
+					body: JSON.stringify({ country })
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				const updatedVisited = data.results.visited_countries;
 				setStore({ visitedCountries: updatedVisited });
+				return;
 			},
-			addToWishes: (item) => {
-				const updatedWishes = [...getStore().toVisitCountries, item];
-				setStore({ toVisitCountries: updatedWishes });
-			},
-			removeFromWishes: (item) => {
-				const updatedWishes = getStore().toVisitCountries.filter(currentItem => currentItem.name !== item.name);
-				setStore({ toVisitCountries: updatedWishes });
-			},
-			addToFavorites: (item) => {
-				const updatedFavorites = [...getStore().favoriteCountries, item];
+			addToFavorites: async (country) => {
+				const token = localStorage.getItem('token');
+				const uri = `${process.env.BACKEND_URL}/api/favorite-countries`;
+				const options = {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+						"Authorization": `Bearer ${token}`
+					},
+					body: JSON.stringify({ country })
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				const updatedFavorites = data.results.favorite_countries;
 				setStore({ favoriteCountries: updatedFavorites });
+				return;
 			},
-			removeFromFavorites: (item) => {
-				const updatedFavorites = getStore().favoriteCountries.filter(currentItem => currentItem.name !== item.name);
+			removeFromFavorites: async (country) => {
+				const token = localStorage.getItem('token');
+				const uri = `${process.env.BACKEND_URL}/api/favorite-countries`;
+				const options = {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+						"Authorization": `Bearer ${token}`
+					},
+					body: JSON.stringify({ country })
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				const updatedFavorites = data.results.favorite_countries;
 				setStore({ favoriteCountries: updatedFavorites });
+				return;
+			},
+			addToWishes: async (country) => {
+				const token = localStorage.getItem('token');
+				const uri = `${process.env.BACKEND_URL}/api/to-visit-countries`;
+				const options = {
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+						"Authorization": `Bearer ${token}`
+					},
+					body: JSON.stringify({ country })
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				const updatedWishes = data.results.to_visit_countries;
+				setStore({ toVisitCountries: updatedWishes });
+				return;
+			},
+			removeFromWishes: async (country) => {
+				const token = localStorage.getItem('token');
+				const uri = `${process.env.BACKEND_URL}/api/to-visit-countries`;
+				const options = {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+						"Authorization": `Bearer ${token}`
+					},
+					body: JSON.stringify({ country })
+				};
+				const response = await fetch(uri, options);
+				const data = await response.json();
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+				};
+				const updatedWishes = data.results.to_visit_countries;
+				setStore({ toVisitCountries: updatedWishes });
+				return;
 			},
 			getPosts: async () => {
 				const uri = `${process.env.BACKEND_URL}/api/posts`;

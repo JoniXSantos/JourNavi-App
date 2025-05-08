@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy import PickleType
 from datetime import datetime, timezone
 
 
@@ -13,6 +15,10 @@ class Users(db.Model):
     picture = db.Column(db.String(), unique=False, nullable=True)
     nationality = db.Column(db.String(), unique=False, nullable=True)
     residence = db.Column(db.String(), unique=False, nullable=True)
+    visited_countries = db.Column(MutableList.as_mutable(PickleType), default=[])
+    favorite_countries = db.Column(MutableList.as_mutable(PickleType), default=[])
+    to_visit_countries = db.Column(MutableList.as_mutable(PickleType), default=[])
+
 
     def __repr__(self):
         return f'<User {self.id} - {self.email}>'
@@ -23,7 +29,10 @@ class Users(db.Model):
                 'name': self.name,
                 'picture': self.picture,
                 'nationality': self.nationality,
-                'residence': self.residence}
+                'residence': self.residence,
+                'visited_countries': self.visited_countries,
+                'favorite_countries': self.favorite_countries,
+                'to_visit_countries': self.to_visit_countries}
     
 
 class Countries(db.Model):

@@ -76,7 +76,7 @@ export const Posts = ({ dark, setDark }) => {
                     </div>
                 </div>
             </div>
-            {currentPosts.length === 0 ? '' : currentPosts.map((item, index) => {
+            {currentPosts.length === 0 ? <p className="text-center"><strong>No posts yet.</strong></p> : currentPosts.map((item, index) => {
                 const user = users.find(user => user.id === item.user_id)
                 const postComments = comments.filter(comment => comment.post_id === item.id)
                 
