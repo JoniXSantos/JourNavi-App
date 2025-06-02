@@ -31,10 +31,10 @@ export const Posts = ({ dark, setDark }) => {
         };
         actions.createPost(dataToSend);
         const modal = document.getElementById("newPost");
-		if (modal) {
-			const bootstrapModal = window.bootstrap.Modal.getInstance(modal);
-			if (bootstrapModal) bootstrapModal.hide();
-		}
+        if (modal) {
+            const bootstrapModal = window.bootstrap.Modal.getInstance(modal);
+            if (bootstrapModal) bootstrapModal.hide();
+        }
         setTitle('');
         setDescription('');
     }
@@ -61,8 +61,8 @@ export const Posts = ({ dark, setDark }) => {
                         </div>
                         <form onSubmit={handleSubmit}>
                             <div className={`modal-body ${dark ? 'bg-black' : ''}`}>
-                                <input className={`mb-2 ps-3 w-100 ${dark ? 'bg-dark text-white border-0' : ''}`} value={title} onChange={e => setTitle(e.target.value)} style={{height: '5vh', border: 'thin solid #D3D3D3'}} placeholder="Title" required />
-                                <textarea className={`mb-2 px-3 w-100 ${dark ? 'bg-dark text-white border-0' : ''}`} value={description} onChange={e => setDescription(e.target.value)} style={{height: '20vh', border: 'thin solid #D3D3D3'}} placeholder="Description" required />
+                                <input className={`mb-2 ps-3 w-100 ${dark ? 'bg-dark text-white border-0' : ''}`} value={title} onChange={e => setTitle(e.target.value)} style={{ height: '5vh', border: 'thin solid #D3D3D3' }} placeholder="Title" required />
+                                <textarea className={`mb-2 px-3 w-100 ${dark ? 'bg-dark text-white border-0' : ''}`} value={description} onChange={e => setDescription(e.target.value)} style={{ height: '20vh', border: 'thin solid #D3D3D3' }} placeholder="Description" required />
                             </div>
                             <div className="modal-footer" style={{ background: '#FE5558' }}>
                                 <button type="button" onClick={handleReset} className="btn btn-secondary me-2">
@@ -79,14 +79,16 @@ export const Posts = ({ dark, setDark }) => {
             {currentPosts.length === 0 ? <p className="text-center"><strong>No posts yet.</strong></p> : currentPosts.map((item, index) => {
                 const user = users.find(user => user.id === item.user_id)
                 const postComments = comments.filter(comment => comment.post_id === item.id)
-                
+
                 return (
                     <div key={index} className={`card mb-3 ${dark ? 'bg-dark' : ''}`}>
                         <div className="card-body">
                             <Link to={`/post/${item.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
                                 <h5 className="card-title">{item.title}</h5>
                             </Link>
-                            <h6 className="card-subtitle mb-2 text-body-secondary">{user.name ? user.name : user.email}</h6>
+                            <Link to={`/user/${item.user_id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
+                                <h6 className="card-subtitle mb-2 text-body-secondary">{user.name ? user.name : user.email}</h6>
+                            </Link>
                             <p className="card-text">{item.description}</p>
                             <div className="d-flex">
                                 <p className="me-3"><small>{dateFormat(item.date)}</small></p>
@@ -98,10 +100,10 @@ export const Posts = ({ dark, setDark }) => {
                     </div>
                 )
             })}
-            <Pagination 
+            <Pagination
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
-                totalPosts = {posts.length}
+                totalPosts={posts.length}
                 postsPerPage={postsPerPage}
                 dark={dark}
             />

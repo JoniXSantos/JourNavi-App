@@ -44,7 +44,8 @@ const Layout = () => {
                         <Route element={<Signup dark={dark} setDark={setDark} />} path="/signup" />
                         <Route element={<Login dark={dark} setDark={setDark} />} path="/login" />
                         <Route element={<ProtectedRoutes />}>
-                            <Route element={<Profile />} path="/profile" />
+                            <Route element={<Profile dark={dark} />} path="/profile" />
+                            <Route element={<Profile dark={dark} />} path="/user/:id" />
                             <Route element={<Countries dark={dark} setDark={setDark} />} path="/countries" />
                             <Route element={<Posts dark={dark} setDark={setDark} />} path="/posts" />
                             <Route element={<Post dark={dark} setDark={setDark} />} path="/post/:id" />

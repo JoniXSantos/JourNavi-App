@@ -14,7 +14,7 @@ class Users(db.Model):
     name = db.Column(db.String(), unique=False, nullable=True)
     picture = db.Column(db.String(), unique=False, nullable=True)
     nationality = db.Column(db.String(), unique=False, nullable=True)
-    residence = db.Column(db.String(), unique=False, nullable=True)
+    about = db.Column(db.String(), unique=False, nullable=True)
     visited_countries = db.Column(MutableList.as_mutable(PickleType), default=[])
     favorite_countries = db.Column(MutableList.as_mutable(PickleType), default=[])
     to_visit_countries = db.Column(MutableList.as_mutable(PickleType), default=[])
@@ -29,7 +29,7 @@ class Users(db.Model):
                 'name': self.name,
                 'picture': self.picture,
                 'nationality': self.nationality,
-                'residence': self.residence,
+                'about': self.about,
                 'visited_countries': self.visited_countries,
                 'favorite_countries': self.favorite_countries,
                 'to_visit_countries': self.to_visit_countries}

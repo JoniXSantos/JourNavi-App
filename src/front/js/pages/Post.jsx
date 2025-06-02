@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 
 
 export const Post = ({ dark, setDark }) => {
@@ -67,7 +67,9 @@ export const Post = ({ dark, setDark }) => {
             <div className={`card mb-3 ${dark ? 'bg-dark' : ''}`}>
                 <div className="card-body">
                     <h3 className="card-title">{post.title}</h3>
-                    <h6 className="card-subtitle mb-2 text-body-secondary">{user.name}</h6>
+                    <Link to={`/user/${user.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
+                        <h6 className="card-subtitle mb-2 text-body-secondary">{user.name ? user.name : user.email}</h6>
+                    </Link>
                     {
                     editing ? 
                     <form onSubmit={handleEdit}>
@@ -101,7 +103,9 @@ export const Post = ({ dark, setDark }) => {
                     <div key={index} className={`card mb-1 ${dark ? 'bg-dark' : ''}`}>
                         <div className="card-body">
                             <div className="d-flex justify-content-between">
-                                <h6 className="card-title">{writer.name}</h6>
+                                <Link to={`/user/${writer.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
+                                    <h6 className="card-title">{writer.name}</h6>
+                                </Link>
                                 <h6 className="me-3"><small>({dateFormat(item.date)})</small></h6>
                             </div>
                             <div className="d-flex">
@@ -112,6 +116,9 @@ export const Post = ({ dark, setDark }) => {
                     </div> 
                 )
             })}
+            <div className="d-flex justify-content-center">
+                <button type="button" title="Return to Posts" className="btn btn-dark mt-4" onClick={() => navigate('/Posts')}><i className="fa-solid fa-person-walking-arrow-loop-left"></i></button>
+            </div>
         </div>
     )
 }

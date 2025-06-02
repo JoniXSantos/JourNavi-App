@@ -82,7 +82,7 @@ def user(id):
         data = request.json
         row.name = data.get('name')
         row.nationality = data.get('nationality')
-        row.residence = data.get('residence')
+        row.about = data.get('about')
         db.session.commit()
         response_body['message'] = 'Your data are updated'
         response_body['results'] = row.serialize()
