@@ -8,7 +8,7 @@ export const Settings = ({ dark, setDark }) => {
     const [editing, setEditing] = useState(false);
     const [name, setName] = useState(store.user.name || '');
     const [nationality, setNationality] = useState(store.user.nationality || '');
-    const [residence, setResidence] = useState(store.user.residence || '');
+    const [about, setAbout] = useState(store.user.about || '');
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [repeatNewPassword, setRepeatNewPassword] = useState('');
@@ -29,7 +29,7 @@ export const Settings = ({ dark, setDark }) => {
 
     const editData = async (event) => {
         event.preventDefault();
-        const updatedData = { name: name, nationality: nationality, residence: residence };
+        const updatedData = { name: name, nationality: nationality, about: about };
         const success = await actions.editData(store.user.id, updatedData);
         if (success) {
             alert('Success!');
@@ -111,10 +111,10 @@ export const Settings = ({ dark, setDark }) => {
                                 </div>
                                 <div className="row g-3 align-items-center mb-2">
                                     <div className="col-auto">
-                                        <label htmlFor="residence" className="col-form-label fw-bold">Residence</label>
+                                        <label htmlFor="about" className="col-form-label fw-bold">About</label>
                                     </div>
                                     <div className="col-auto">
-                                        {editing ? <input type="text" style={{ width: '600px' }} value={residence} onChange={(e) => setResidence(e.target.value)} id="residence" className="form-control" aria-describedby="userResidence" /> : store.user.residence}
+                                        {editing ? <input type="text" style={{ width: '600px' }} value={about} onChange={(e) => setAbout(e.target.value)} id="about" className="form-control" aria-describedby="userDescription" /> : store.user.about}
                                     </div>
                                 </div>
                                 {editing ?
