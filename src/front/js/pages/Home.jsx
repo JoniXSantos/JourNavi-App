@@ -2,7 +2,7 @@ import React from "react";
 import "../../styles/home.css";
 
 
-export const Home = ({ dark, setDark }) => {
+export const Home = ({ dark }) => {
 
 	return (
 		<div className="text-center">

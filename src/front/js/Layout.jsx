@@ -40,16 +40,16 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar dark={dark} setDark={setDark} />
                     <Routes>
-                        <Route element={<Home dark={dark} setDark={setDark} />} path="/" />
-                        <Route element={<Signup dark={dark} setDark={setDark} />} path="/signup" />
-                        <Route element={<Login dark={dark} setDark={setDark} />} path="/login" />
+                        <Route element={<Home dark={dark} />} path="/" />
+                        <Route element={<Signup dark={dark} />} path="/signup" />
+                        <Route element={<Login dark={dark} />} path="/login" />
                         <Route element={<ProtectedRoutes />}>
                             <Route element={<Profile dark={dark} />} path="/profile" />
                             <Route element={<Profile dark={dark} />} path="/user/:id" />
-                            <Route element={<Countries dark={dark} setDark={setDark} />} path="/countries" />
-                            <Route element={<Posts dark={dark} setDark={setDark} />} path="/posts" />
-                            <Route element={<Post dark={dark} setDark={setDark} />} path="/post/:id" />
-                            <Route element={<Settings dark={dark} setDark={setDark} />} path="/settings" />
+                            <Route element={<Countries dark={dark} />} path="/countries" />
+                            <Route element={<Posts dark={dark} />} path="/posts" />
+                            <Route element={<Post dark={dark} />} path="/post/:id" />
+                            <Route element={<Settings dark={dark} />} path="/settings" />
                         </Route>
                         <Route element={<h1>Not found!</h1>} path="*"/>
                     </Routes>

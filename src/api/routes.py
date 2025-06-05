@@ -14,7 +14,7 @@ import requests
 
 
 api = Blueprint('api', __name__)
-CORS(api)  # Allow CORS requests to this API
+CORS(api, resources={r"/*": {"origins": "https://sturdy-giggle-v6g6rp5995qjcpq9g-3000.app.github.dev"}}, supports_credentials=True)  # Allow CORS requests to this API
 
 
 @api.route('/signup', methods=['POST'])

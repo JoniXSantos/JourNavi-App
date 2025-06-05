@@ -3,7 +3,7 @@ import { Context } from "../store/appContext.js";
 import NoPicture from "../../img/No Picture.png";
 
 
-export const Settings = ({ dark, setDark }) => {
+export const Settings = ({ dark }) => {
     const { store, actions } = useContext(Context);
     const [editing, setEditing] = useState(false);
     const [name, setName] = useState(store.user.name || '');
