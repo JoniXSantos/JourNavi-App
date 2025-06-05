@@ -70,21 +70,29 @@
 }
 
 .page-link {
-    color: #FE5558;
+    color: black;
 }
 
 .page-link:hover {
-    background-color: lightpink;
+    background-color: lightgray;
     color: white;
     cursor: pointer;
 }
 
 .page-item.active .page-link {
-    background-color: #FE5558;
-    border-color: lightgray;
+    background-color: black;
+    border: white 1px solid;
 }
 
 .page-item.active .page-link:hover {
-    background-color: lightpink;
+    background-color: lightgray;
     cursor: pointer;
+}
+
+.bg-grayish {
+    background-color: #E8E4C9;
+}
+
+.bg-gray {
+    background-color: #808080;
 }

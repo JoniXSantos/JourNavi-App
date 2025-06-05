@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import { Pagination } from "../component/Pagination.jsx";
 
 
-export const Posts = ({ dark, setDark }) => {
+export const Posts = ({ dark }) => {
     const { store, actions } = useContext(Context);
     const posts = store.posts;
     const users = store.users;
+    const currentUser = store.user;
     const comments = store.comments;
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -45,8 +46,9 @@ export const Posts = ({ dark, setDark }) => {
     }
 
     return (
-        <div className="mt-4 container">
-            <h1>Posts</h1>
+        <div className="container mt-3">
+            <h1 className="mb-4">Posts</h1>
+            <p>Do you need any guidance in your journey? Here is the right place for it. You can also share your experiences.</p>
             <div className="d-flex justify-content-end mb-4">
                 <button type="button" className="btn btn-dark" data-bs-toggle="modal" data-bs-target="#newPost">
                     New Post
@@ -81,13 +83,13 @@ export const Posts = ({ dark, setDark }) => {
                 const postComments = comments.filter(comment => comment.post_id === item.id)
 
                 return (
-                    <div key={index} className={`card mb-3 ${dark ? 'bg-dark' : ''}`}>
+                    <div key={index} className={`card mb-3 ${dark ? 'bg-dark' : 'bg-grayish'}`}>
                         <div className="card-body">
                             <Link to={`/post/${item.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
                                 <h5 className="card-title">{item.title}</h5>
                             </Link>
-                            <Link to={`/user/${item.user_id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
-                                <h6 className="card-subtitle mb-2 text-body-secondary">{user.name ? user.name : user.email}</h6>
+                            <Link to={user.id === currentUser.id ? `/profile` : `/user/${item.user_id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
+                                <h6 className="card-subtitle mb-2 text-body-secondary">{user.id === currentUser.id ? 'Myself' : user.name || user.email}</h6>
                             </Link>
                             <p className="card-text">{item.description}</p>
                             <div className="d-flex">

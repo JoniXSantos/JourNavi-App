@@ -9,17 +9,17 @@ export const Pagination = ({ currentPage, setCurrentPage, totalPosts, postsPerPa
     }
     
     return (
-        <div className="d-flex justify-content-center align-items-center mt-5 mb-3" style={{ width: "100wh" }}>
+        <div className={`d-flex justify-content-center align-items-center ${pages.length === 1 ? 'd-none' : ''}`} style={{ width: "100wh" }}>
             <nav aria-label="...">
                 <ul className="pagination">
                     <li className={`page-item ${currentPage === 1 ? 'd-none' : ''}`}>
-                        <span className={`page-link ${dark ? 'bg-dark' : ''}`} onClick={() => setCurrentPage(currentPage - 1)}><i className="fa-solid fa-arrow-left"></i></span>
+                        <span className="page-link" onClick={() => setCurrentPage(currentPage - 1)}><i className="fa-solid fa-arrow-left"></i></span>
                     </li>
                     {pages.map((page, index) => {
-                        return <li className={`page-item ${currentPage === page ? 'active' : ''}`} key={index}><span className={`page-link ${dark ? 'bg-dark' : ''}`} onClick={() => setCurrentPage(page)}>{page}</span></li>
+                        return <li className={`page-item ${currentPage === page ? 'active' : ''}`} key={index}><span className="page-link" onClick={() => setCurrentPage(page)}>{page}</span></li>
                     })}
                     <li className={`page-item ${currentPage === pages[pages.length - 1] ? 'd-none' : ''}`}>
-                        <span className={`page-link ${dark ? 'bg-dark' : ''}`} onClick={() => setCurrentPage(currentPage + 1)}><i className="fa-solid fa-arrow-right"></i></span>
+                        <span className="page-link" onClick={() => setCurrentPage(currentPage + 1)}><i className="fa-solid fa-arrow-right"></i></span>
                     </li>
                 </ul>
             </nav>

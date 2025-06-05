@@ -3,7 +3,7 @@ import { Context } from "../store/appContext.js";
 import { useParams, useNavigate, Link } from "react-router-dom";
 
 
-export const Post = ({ dark, setDark }) => {
+export const Post = ({ dark }) => {
     const { store, actions } = useContext(Context);
     const { id } = useParams();
     const post = store.posts.find(p => p.id === parseInt(id)) || {};
@@ -64,7 +64,7 @@ export const Post = ({ dark, setDark }) => {
 
     return (
         <div className="my-4 container">
-            <div className={`card mb-3 ${dark ? 'bg-dark' : ''}`}>
+            <div className={`card mb-3 ${dark ? 'bg-dark' : 'bg-grayish'}`}>
                 <div className="card-body">
                     <h3 className="card-title">{post.title}</h3>
                     <Link to={`/user/${user.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
@@ -90,7 +90,7 @@ export const Post = ({ dark, setDark }) => {
             <h5 className="ms-3">Comments ({comments.length}):</h5>
             <form onSubmit={handleSubmit}>
             <div className="input-group mb-3">
-                <input className={`p-3 form-control ${dark ? 'bg-dark border-0 text-white' : ''}`} style={{height: '5vh', border: 'thin solid #D3D3D3'}} placeholder="Write your comment..." value={comment} onChange={e => setComment(e.target.value)} />
+                <input className={`p-3 form-control ${dark ? 'bg-dark border-0 text-white' : 'bg-grayish'}`} style={{height: '5vh', border: 'thin solid #D3D3D3'}} placeholder="Write your comment..." value={comment} onChange={e => setComment(e.target.value)} />
                 <button type="submit" className={`btn ${dark ? 'btn-secondary' : 'btn-dark'}`}>
                     Add Comment
                 </button>
@@ -100,7 +100,7 @@ export const Post = ({ dark, setDark }) => {
                 const writer = store.users.find(u => u.id === item.user_id)
 
                 return (
-                    <div key={index} className={`card mb-1 ${dark ? 'bg-dark' : ''}`}>
+                    <div key={index} className={`card mb-1 ${dark ? 'bg-dark' : 'bg-grayish'}`}>
                         <div className="card-body">
                             <div className="d-flex justify-content-between">
                                 <Link to={`/user/${writer.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
@@ -117,7 +117,7 @@ export const Post = ({ dark, setDark }) => {
                 )
             })}
             <div className="d-flex justify-content-center">
-                <button type="button" title="Return to Posts" className="btn btn-dark mt-4" onClick={() => navigate('/Posts')}><i className="fa-solid fa-person-walking-arrow-loop-left"></i></button>
+                <button type="button" title="Return to Posts" className="btn btn-dark mt-4" onClick={() => navigate(-1)}><i className="fa-solid fa-person-walking-arrow-loop-left"></i></button>
             </div>
         </div>
     )

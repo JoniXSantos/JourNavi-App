@@ -3,7 +3,7 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
 
-export const Signup = ({ dark, setDark }) => {
+export const Signup = ({ dark }) => {
 
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
