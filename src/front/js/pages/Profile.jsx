@@ -9,6 +9,7 @@ import { Pagination } from "../component/Pagination.jsx";
 export const Profile = ({ dark }) => {
     const { id } = useParams();
     const { store, actions } = useContext(Context);
+    const countries = store.countries;
     const isCurrentUser = !id;
     const user = isCurrentUser ? store.user : store.users.find(user => user.id === parseInt(id)) || {};
     const posts = isCurrentUser ? store.posts.filter(post => post.user_id === user.id) : store.posts.filter(post => post.user_id === parseInt(id));
@@ -52,9 +53,33 @@ export const Profile = ({ dark }) => {
                                 </div>
                                 <div className="p-4 d-flex justify-content-end">
                                     <div className="d-flex justify-content-end text-center py-1 text-body me-5">
-                                        <div>
-                                            <p className={`mb-1 h5 ${dark ? 'text-white' : ''}`}>{user.visited_countries.length}</p>
-                                            <p className="small text-muted mb-0">Visited <br/>{posts.length === 1 ? 'Country' : 'Countries'}</p>
+                                        <div data-bs-toggle="modal" data-bs-target="#visited">
+                                            <p className={`mb-1 h5 main-link ${dark ? 'text-white' : ''}`}>{user.visited_countries.length}</p>
+                                            <p className="small text-muted mb-0">Visited <br />{posts.length === 1 ? 'Country' : 'Countries'}</p>
+                                        </div>
+                                        <div className="modal fade" id="visited">
+                                            <div className="modal-dialog">
+                                                <div className="modal-content">
+                                                    <div className="modal-header" style={{ background: '#FE5558' }}>
+                                                        <h5 className="modal-title">Visited Countries</h5>
+                                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div className="modal-body">
+                                                        <ul className="list-unstyled text-start">
+                                                            {user.visited_countries.length === 0 ? <li>No country on the list.</li> : ''}
+                                                            {countries.filter(c => user.visited_countries.includes(c.name)).map((country, index) => (
+                                                                <li key={index} className={`text-body ${dark ? 'text-white' : ''}`}>
+                                                                    <div className="d-flex align-items-baseline">
+                                                                        <img className="card-img-top me-2" src={country.flag} style={{ width: '25px' }} />
+                                                                        <span className="me-1">{country.name}</span>
+                                                                        <i className={`fas fa-star text-warning ${!user.favorite_countries.includes(country.name) ? 'd-none' : ''}`} title="Favorite"></i>
+                                                                    </div>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="d-flex justify-content-end text-center py-1 text-body me-3">
@@ -69,8 +94,8 @@ export const Profile = ({ dark }) => {
                                         <div className={`p-1 ps-4 pt-2 rounded text-white ${dark ? 'bg-gray' : 'bg-dark'}`}>
                                             <p className={`lead fw-normal mb-1 ${dark ? 'text-white' : ''}`}>About</p>
                                         </div>
-                                        <div className="p-4 bg-body-tertiary">
-                                            <p className={`font-italic mb-1 ${dark ? 'text-white' : ''}`}>{user.about ? user.about : 'No description yet.'}</p>
+                                        <div className="p-4">
+                                            <p className={`mb-1 text-center ${dark ? 'text-white' : ''}`}><strong>{user.about ? user.about : 'No description yet.'}</strong></p>
                                         </div>
                                     </div>
                                     <div className={`p-1 ps-4 pt-2 rounded text-white ${dark ? 'bg-gray' : 'bg-dark'}`}>
@@ -91,11 +116,11 @@ export const Profile = ({ dark }) => {
                                         </ul>
                                     </div>
                                     <Pagination
-                                            currentPage={currentPage}
-                                            setCurrentPage={setCurrentPage}
-                                            totalPosts={posts.length}
-                                            postsPerPage={postsPerPage}
-                                            dark={dark}
+                                        currentPage={currentPage}
+                                        setCurrentPage={setCurrentPage}
+                                        totalPosts={posts.length}
+                                        postsPerPage={postsPerPage}
+                                        dark={dark}
                                     />
                                 </div>
                             </div>
