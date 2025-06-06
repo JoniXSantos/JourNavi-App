@@ -9,7 +9,7 @@ export const Pagination = ({ currentPage, setCurrentPage, totalPosts, postsPerPa
     }
     
     return (
-        <div className={`d-flex justify-content-center align-items-center ${pages.length === 1 ? 'd-none' : ''}`} style={{ width: "100wh" }}>
+        <div className={`d-flex justify-content-center align-items-center ${pages.length <= 1 ? 'd-none' : ''}`} style={{ width: "100wh" }}>
             <nav aria-label="...">
                 <ul className="pagination">
                     <li className={`page-item ${currentPage === 1 ? 'd-none' : ''}`}>
