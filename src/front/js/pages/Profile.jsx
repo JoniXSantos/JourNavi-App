@@ -95,7 +95,8 @@ export const Profile = ({ dark }) => {
                                             <p className={`lead fw-normal mb-1 ${dark ? 'text-white' : ''}`}>About</p>
                                         </div>
                                         <div className="p-4">
-                                            <p className={`mb-1 text-center ${dark ? 'text-white' : ''}`}><strong>{user.about ? user.about : 'No description yet.'}</strong></p>
+                                            <p className={`mb-1 text-center ${dark ? 'text-white' : ''}`}><strong>{!user.about ? 'No description yet.' : ''}</strong></p>
+                                            <p className={`mb-1 ${dark ? 'd-none' : ''}`}>{user.about ? user.about : ''}</p>
                                         </div>
                                     </div>
                                     <div className={`p-1 ps-4 pt-2 rounded text-white ${dark ? 'bg-gray' : 'bg-dark'}`}>
