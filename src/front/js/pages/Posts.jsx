@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
 import { Link } from "react-router-dom";
 import { Pagination } from "../component/Pagination.jsx";
@@ -14,7 +14,6 @@ export const Posts = ({ dark }) => {
     const [description, setDescription] = useState('');
     const [uploading, setUploading] = useState(false);
     const images = store.images;
-    const inputRef = useRef();
     const postsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const lastPostIndex = currentPage * postsPerPage;
@@ -33,9 +32,6 @@ export const Posts = ({ dark }) => {
             const success = await actions.uploadImages(event.target.files);
             if (success) {
                 setUploading(false);
-                if (inputRef.current) {
-                    inputRef.current.value = fileNum + " images selected";
-                };
             };
         };
     };
@@ -93,7 +89,20 @@ export const Posts = ({ dark }) => {
                                         <span className="visually-hidden">Loading...</span>
                                     </div> 
                                     :
-                                    <input type="file" multiple ref={inputRef} onChange={handleUpload} />
+                                    (images.length > 0 ? 
+                                        <div className="d-flex align-items-baseline">
+                                            <label className="btn btn-dark me-3">
+                                                Change Images
+                                                <input type="file" className="d-none" multiple onChange={handleUpload} />
+                                            </label>
+                                            <p>{images.length > 1 ? `${images.length} images` : 'Image'} uploaded</p>
+                                        </div>
+                                    : 
+                                        <label className="btn btn-dark">
+                                            Select Images
+                                            <input type="file" className="d-none" multiple onChange={handleUpload} />
+                                        </label>
+                                    )
                                 }
                             </div>
                             <div className="modal-footer" style={{ background: '#FE5558' }}>
