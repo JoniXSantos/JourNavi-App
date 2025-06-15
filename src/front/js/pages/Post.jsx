@@ -7,6 +7,7 @@ export const Post = ({ dark }) => {
     const { store, actions } = useContext(Context);
     const { id } = useParams();
     const post = store.posts.find(p => p.id === parseInt(id)) || {};
+    const images = post.images.replace(/^{|}$/g, '').split(',') || [];
     const user = store.users.find(u => u.id === post.user_id);
     const currentUser = store.user;
     const comments = store.comments.filter(comment => comment.post_id === post.id);
@@ -71,22 +72,26 @@ export const Post = ({ dark }) => {
                     <Link to={user.id === currentUser.id ? `/profile` : `/user/${user.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
                         <h6 className="card-subtitle mb-2 text-body-secondary">{user.id === currentUser.id ? 'Myself' : user.name || user.email}</h6>
                     </Link>
-                    <div id="carouselExample" className="carousel slide my-4">
-                        <div className={`${post.images ? 'carousel-inner' : 'd-none'}`}>
-                            {post.images && post.images.replace(/^{|}$/g, '').split(',').map((image, index) => (
+                    <div id="carouselExample" className={`${post.images ? 'carousel slide my-4' : 'd-none'}`}>
+                        <div className="carousel-inner">
+                            {images.map((image, index) => (
                                 <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
                                     <img src={image} alt={`Post image ${index + 1}`} className="d-block mx-auto" style={{ maxHeight: '400px' }} />
                                 </div>
                             ))}
                         </div>
-                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                            <span className="carousel-control-prev-icon" style={{ filter: 'invert(1)' }} aria-hidden="true"></span>
-                            <span className="visually-hidden">Previous</span>
-                        </button>
-                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                            <span className="carousel-control-next-icon" style={{ filter: 'invert(1)' }} aria-hidden="true"></span>
-                            <span className="visually-hidden">Next</span>
-                        </button>
+                        {images.length > 1 ? (
+                        <>
+                            <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                <span className="carousel-control-prev-icon" style={{ filter: 'invert(1)' }} aria-hidden="true"></span>
+                                <span className="visually-hidden">Previous</span>
+                            </button>
+                            <button className="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                <span className="carousel-control-next-icon" style={{ filter: 'invert(1)' }} aria-hidden="true"></span>
+                                <span className="visually-hidden">Next</span>
+                            </button>
+                        </>
+                        ) : ''}
                     </div>
                     {
                         editing ?
