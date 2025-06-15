@@ -261,6 +261,28 @@ def to_visit_countries():
         return response_body, 200
 
 
+@api.route('/uploads', methods=['POST'])
+def uploads():
+    response_body = {}
+    files_to_upload = request.files.getlist('imgs')
+    if not files_to_upload:
+       response_body['message'] = 'No files found'
+       return response_body, 400
+    images_urls = []
+    for file in files_to_upload:
+        upload = cloudinary.uploader.upload(file)
+        image_url = upload.get('url')
+        if image_url.startswith("http://"):
+            image_url = image_url.replace("http://", "https://")
+        images_urls.append(image_url)
+    if not images_urls:
+        response_body['message'] = 'No files were uploaded'
+        return response_body, 400
+    response_body['message'] = 'The files were uploaded successfully'
+    response_body['results'] = images_urls
+    return response_body, 200
+
+
 @api.route('/posts', methods=['GET', 'POST'])
 def posts():
     response_body = {}
@@ -277,6 +299,7 @@ def posts():
         data = request.json
         row = Posts(title = data.get('title'),
                     description = data.get('description'),
+                    images = data.get('images'),
                     date = datetime.now(),
                     user_id = data.get('user_id'))
         db.session.add(row)

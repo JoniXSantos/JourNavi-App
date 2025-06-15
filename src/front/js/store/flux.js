@@ -9,8 +9,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			favoriteCountries: [],
 			toVisitCountries: [],
 			users: [],
+			images: [],
 			posts: [],
-			userPosts: [],
 			currentPost: [],
 			comments: []
 		},
@@ -344,6 +344,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ posts: data.results });
 				return data;
 			},
+			uploadImages: async (files) => {
+				const uri = `${process.env.BACKEND_URL}/api/uploads`;
+				const form = new FormData();
+				for (const file of files) {
+					form.append('imgs', file);
+				};
+				const options = {
+					method: 'POST',
+					body: form
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					console.log('Error', response.status, response.statusText);
+					return false;
+				};
+				const data = await response.json();
+				console.log(data.results);
+				setStore({ images: data.results });
+				return true;
+			},
 			createPost: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/posts`;
 				const options = {
@@ -358,8 +378,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
 				};
+				setStore({ images: [] });
 				getActions().getPosts();
-				return data.results;
+				return true;
 			},
 			getPost: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/api/posts/${id}`;

@@ -8,6 +8,7 @@ export const Post = ({ dark }) => {
     const { id } = useParams();
     const post = store.posts.find(p => p.id === parseInt(id)) || {};
     const user = store.users.find(u => u.id === post.user_id);
+    const currentUser = store.user;
     const comments = store.comments.filter(comment => comment.post_id === post.id);
     const [comment, setComment] = useState('');
     const [editing, setEditing] = useState(false);
@@ -67,18 +68,35 @@ export const Post = ({ dark }) => {
             <div className={`card mb-3 ${dark ? 'bg-dark' : 'bg-grayish'}`}>
                 <div className="card-body">
                     <h3 className="card-title">{post.title}</h3>
-                    <Link to={`/user/${user.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
-                        <h6 className="card-subtitle mb-2 text-body-secondary">{user.name ? user.name : user.email}</h6>
+                    <Link to={user.id === currentUser.id ? `/profile` : `/user/${user.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
+                        <h6 className="card-subtitle mb-2 text-body-secondary">{user.id === currentUser.id ? 'Myself' : user.name || user.email}</h6>
                     </Link>
+                    <div id="carouselExample" className="carousel slide my-4">
+                        <div className={`${post.images ? 'carousel-inner' : 'd-none'}`}>
+                            {post.images && post.images.replace(/^{|}$/g, '').split(',').map((image, index) => (
+                                <div className={`carousel-item ${index === 0 ? 'active' : ''}`} key={index}>
+                                    <img src={image} alt={`Post image ${index + 1}`} className="d-block mx-auto" style={{ maxHeight: '400px' }} />
+                                </div>
+                            ))}
+                        </div>
+                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                            <span className="carousel-control-prev-icon" style={{ filter: 'invert(1)' }} aria-hidden="true"></span>
+                            <span className="visually-hidden">Previous</span>
+                        </button>
+                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                            <span className="carousel-control-next-icon" style={{ filter: 'invert(1)' }} aria-hidden="true"></span>
+                            <span className="visually-hidden">Next</span>
+                        </button>
+                    </div>
                     {
-                    editing ? 
-                    <form onSubmit={handleEdit}>
-                        <input className="w-100" value={description} onChange={e => setDescription(e.target.value)} />
-                        <button type="button" className="btn btn-secondary my-3 me-3" onClick={() => setEditing(false)}>Cancel</button>
-                        <button type="submit" className="btn btn-dark my-3">Save</button>
-                    </form>
-                    :
-                    <p className="card-text">{post.description}</p>
+                        editing ?
+                            <form onSubmit={handleEdit}>
+                                <input className="w-100" value={description} onChange={e => setDescription(e.target.value)} />
+                                <button type="button" className="btn btn-secondary my-3 me-3" onClick={() => setEditing(false)}>Cancel</button>
+                                <button type="submit" className="btn btn-dark my-3">Save</button>
+                            </form>
+                            :
+                            <p className="card-text">{post.description}</p>
                     }
                     <div className="d-flex">
                         <p><small>{dateFormat(post.date)}</small></p>
@@ -89,12 +107,12 @@ export const Post = ({ dark }) => {
             </div>
             <h5 className="ms-3">Comments ({comments.length}):</h5>
             <form onSubmit={handleSubmit}>
-            <div className="input-group mb-3">
-                <input className={`p-3 form-control ${dark ? 'bg-dark border-0 text-white' : 'bg-grayish'}`} style={{height: '5vh', border: 'thin solid #D3D3D3'}} placeholder="Write your comment..." value={comment} onChange={e => setComment(e.target.value)} />
-                <button type="submit" className={`btn ${dark ? 'btn-secondary' : 'btn-dark'}`}>
-                    Add Comment
-                </button>
-            </div>
+                <div className="input-group mb-3">
+                    <input className={`p-3 form-control ${dark ? 'bg-dark border-0 text-white' : 'bg-grayish'}`} style={{ height: '5vh', border: 'thin solid #D3D3D3' }} placeholder="Write your comment..." value={comment} onChange={e => setComment(e.target.value)} />
+                    <button type="submit" className={`btn ${dark ? 'btn-secondary' : 'btn-dark'}`}>
+                        Add Comment
+                    </button>
+                </div>
             </form>
             {comments.length === 0 ? <p className="ms-3">No comments yet.</p> : comments.slice().reverse().map((item, index) => {
                 const writer = store.users.find(u => u.id === item.user_id)
@@ -103,8 +121,8 @@ export const Post = ({ dark }) => {
                     <div key={index} className={`card mb-1 ${dark ? 'bg-dark' : 'bg-grayish'}`}>
                         <div className="card-body">
                             <div className="d-flex justify-content-between">
-                                <Link to={`/user/${writer.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
-                                    <h6 className="card-title">{writer.name}</h6>
+                                <Link to={writer.id === currentUser.id ? `/profile` : `/user/${writer.id}`} className={`${dark ? 'link-style' : 'main-link'}`} className={`${dark ? 'link-style' : 'main-link'}`}>
+                                    <h6 className="card-title">{writer.id === currentUser.id ? 'Myself' : writer.name || writer.email}</h6>
                                 </Link>
                                 <h6 className="me-3"><small>({dateFormat(item.date)})</small></h6>
                             </div>
@@ -113,7 +131,7 @@ export const Post = ({ dark }) => {
                                 <p className={`ms-auto me-3 icon-button ${store.user.id === item.user_id ? '' : 'd-none'}`} onClick={() => deleteComment(item.id)}><small><i className="fa-solid fa-trash"></i></small></p>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 )
             })}
             <div className="d-flex justify-content-center">

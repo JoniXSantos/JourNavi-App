@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
 import { Context } from "../store/appContext.js";
 import { Link } from "react-router-dom";
 import { Pagination } from "../component/Pagination.jsx";
@@ -12,6 +12,9 @@ export const Posts = ({ dark }) => {
     const comments = store.comments;
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [uploading, setUploading] = useState(false);
+    const images = store.images;
+    const inputRef = useRef();
     const postsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const lastPostIndex = currentPage * postsPerPage;
@@ -23,14 +26,34 @@ export const Posts = ({ dark }) => {
         return date.toLocaleDateString("es-Es");
     };
 
+    const handleUpload = async (event) => {
+        if (event.target.files.length) {
+            const fileNum = event.target.files.length;
+            setUploading(true);
+            const success = await actions.uploadImages(event.target.files);
+            if (success) {
+                setUploading(false);
+                if (inputRef.current) {
+                    inputRef.current.value = fileNum + " images selected";
+                };
+            };
+        };
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        const dataToSend = {
-            title: title,
-            description: description,
-            user_id: store.user.id
-        };
-        actions.createPost(dataToSend);
+        if (!uploading) {
+            const dataToSend = {
+                title: title,
+                description: description,
+                images: images,
+                user_id: store.user.id
+            };
+            actions.createPost(dataToSend);
+        } else {
+            alert('Please wait for the images to finish uploading before submitting the post.');
+            return;
+        }
         const modal = document.getElementById("newPost");
         if (modal) {
             const bootstrapModal = window.bootstrap.Modal.getInstance(modal);
@@ -65,6 +88,13 @@ export const Posts = ({ dark }) => {
                             <div className={`modal-body ${dark ? 'bg-black' : ''}`}>
                                 <input className={`mb-2 ps-3 w-100 ${dark ? 'bg-dark text-white border-0' : ''}`} value={title} onChange={e => setTitle(e.target.value)} style={{ height: '5vh', border: 'thin solid #D3D3D3' }} placeholder="Title" required />
                                 <textarea className={`mb-2 px-3 w-100 ${dark ? 'bg-dark text-white border-0' : ''}`} value={description} onChange={e => setDescription(e.target.value)} style={{ height: '20vh', border: 'thin solid #D3D3D3' }} placeholder="Description" required />
+                                {uploading ? 
+                                    <div className="spinner-border text-danger" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div> 
+                                    :
+                                    <input type="file" multiple ref={inputRef} onChange={handleUpload} />
+                                }
                             </div>
                             <div className="modal-footer" style={{ background: '#FE5558' }}>
                                 <button type="button" onClick={handleReset} className="btn btn-secondary me-2">
