@@ -88,6 +88,9 @@ def user(id):
         response_body['results'] = row.serialize()
         return response_body, 200
     if request.method == 'DELETE':
+        db.session.execute(db.delete(Comments).where(Comments.user_id == id))
+        db.session.execute(db.delete(Comments).where(Comments.post_id.in_(db.session.execute(db.select(Posts.id).where(Posts.user_id == id)).scalars())))
+        db.session.execute(db.delete(Posts).where(Posts.user_id == id))
         db.session.delete(row)
         db.session.commit()
         response_body['message'] = 'Your account was deleted'

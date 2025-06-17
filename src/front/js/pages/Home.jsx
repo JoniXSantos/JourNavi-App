@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
+import { Context } from "../store/appContext.js";
 import "../../styles/home.css";
 import JourNaviLogo from "../../img/JourNavi Logo.png";
 import JourNaviLogoDark from "../../img/JourNavi Logo Dark Mode.png";
@@ -8,7 +9,9 @@ import { useNavigate } from "react-router-dom";
 
 
 export const Home = ({ dark }) => {
+	const { store, actions } = useContext(Context);
 	const navigate = useNavigate();
+	const user = store.user;
 
 	return (
 		<div className="container">
@@ -18,7 +21,7 @@ export const Home = ({ dark }) => {
 				<p className={`col-xl-7 col-lg-8 col-md-10 col-sm-12 mx-auto fs-3 p-3 rounded-2 text-white ${dark ? '' : 'bg-dark'}`} style={{ marginTop: '-40px' }}>
 					Welcome to JourNavi, the navigator in your journey. <br></br> Get ready for a new adventure with us!
 				</p>
-				<div className="d-inline-flex gap-2 mt-3">
+				<div className={`d-inline-flex gap-2 mt-3 ${user ? 'd-none' : ''}`}>
 					<button className="d-inline-flex align-items-center btn btn-lg px-4 rounded-2 text-white" type="button" style={{ background: '#FE5558' }} onClick={() => navigate('/signup')}>
 						START
 					</button>

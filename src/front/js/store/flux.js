@@ -33,6 +33,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 				await getActions().login(dataToSend);
+				getActions().getUsers();
 				return true;
 			},
 			login: async (dataToSend) => {
@@ -138,6 +139,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const data = await response.json();
 				getActions().logout();
+				getActions().getPosts();
+				getActions().getComments();
 				return true;
 			},
 			uploadImage: async (file) => {

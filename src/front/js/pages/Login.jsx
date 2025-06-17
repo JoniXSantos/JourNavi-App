@@ -31,12 +31,12 @@ export const Login = ({ dark }) => {
                 <img className="mb-4 mx-auto d-block" src={dark ? JourNaviLogoDark : JourNaviLogo} alt="" width="80" height="80" />
                 <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
                 <div className="form-floating mb-3">
-                    <input type="email" className={`form-control ${dark ? 'bg-dark' : ''}`} id="floatingInput" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
-                    <label className={dark ? 'text-white' : ''} htmlFor="floatingInput">Email address</label>
+                    <input type="email" className={`form-control input ${dark ? 'bg-dark text-white' : ''}`} id="floatingInput" placeholder="name@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
+                    <label className={dark ? 'text-white valid-label' : ''} htmlFor="floatingInput">Email address</label>
                 </div>
                 <div className="form-floating">
-                    <input type={visible ? 'text' : 'password'} className={`form-control ${dark ? 'bg-dark' : ''}`} id="floatingPassword" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
-                    <label className={dark ? 'text-white' : ''} htmlFor="floatingPassword">Password</label>
+                    <input type={visible ? 'text' : 'password'} className={`form-control ${dark ? 'bg-dark text-white' : ''}`} id="floatingPassword" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
+                    <label className={dark ? 'text-white valid-label' : ''} htmlFor="floatingPassword">Password</label>
                     <div style={{ position: 'relative', left: '90%', transform: 'translateY(-170%)', color: '#FE5558', cursor: 'pointer' }} onClick={() => setVisible(!visible)}>
                         {visible ? <i className="fas fa-eye"></i> : <i className="fas fa-eye-slash"></i>}
                     </div>
