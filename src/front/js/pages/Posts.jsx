@@ -43,7 +43,7 @@ export const Posts = ({ dark }) => {
                 title: title,
                 description: description,
                 images: images,
-                user_id: store.user.id
+                user_id: currentUser.id
             };
             actions.createPost(dataToSend);
         } else {

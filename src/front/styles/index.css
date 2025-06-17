@@ -96,3 +96,16 @@
 .bg-gray {
     background-color: #808080;
 }
+
+input:valid, input:focus {
+  background-color: #e8f0fe !important;
+  color: black !important;
+}
+
+input:focus + .valid-label {
+  color: black !important;
+}
+
+input:valid + .valid-label {
+  color: black !important;
+}
