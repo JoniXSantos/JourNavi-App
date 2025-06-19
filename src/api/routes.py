@@ -5,8 +5,8 @@ from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from datetime import datetime
-from api.utils import generate_sitemap, APIException
-from api.models import db, Users, Countries, Posts, Comments
+from src.api.utils import generate_sitemap, APIException
+from src.api.models import db, Users, Countries, Posts, Comments
 import re
 import cloudinary
 import cloudinary.uploader
