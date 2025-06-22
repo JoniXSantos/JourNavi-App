@@ -1,4 +1,4 @@
-#JourNavi
+# JourNavi
 
 JourNavi is a full-stack web application for travelers to document, share, and explore journeys around the world.
 
@@ -84,4 +84,4 @@ npm run start
 
 ## Contact 🆘
 
-Do not hesitate to contact [me](https://github.com/JoniXSantos) for any question, suggestion, or to report any bug!
+Do not hesitate to contact [the author](https://github.com/JoniXSantos) for any question, suggestion, or to report any bug!
