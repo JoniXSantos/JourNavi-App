@@ -17,10 +17,8 @@ JourNavi is a full-stack web application for travelers to document, share, and e
 - **Posts & Comments:**  
   - Enables users to create, edit, and delete posts about their travel experiences, including the option to upload images.
   - Each post features a comment section where other users can leave reactions.
-- **Pagination:**  
-  Implements paginated views to enhance content navigation and performance.
-- **Responsive UI:**  
-  Features a modern, mobile-friendly interface with support for dark mode.
+- **Pagination:** Implements paginated views to enhance content navigation and performance.
+- **Responsive UI:** Features a modern, mobile-friendly interface with support for dark mode.
 
 ## Architecture 🏗️
 
