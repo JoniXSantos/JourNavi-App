@@ -4,30 +4,30 @@ JourNavi is a full-stack web application for travelers to document, share, and e
 
 ## Main Features 🗝️
 
-- **Authentication & Account Management:**  
-  - It is possible to create an account with an email address and a secure password that meets the defined complexity requirements.
-  - Users can log in using the registration email and password and log out anytime.
-  - Passwords can be changed later to enhance security.
-  - Accounts can be deleted, which will also remove all associated data from the database.
-- **Profile:**  
+- **Account Management:**  
+  - Accounts are created using an email address and a secure password, which are used for authentication.
+  - Supports password changes for improved security.
+  - Allows users to delete their account, with all associated information automatically removed from the system.
+- **User Profile:**  
   - Each user has a profile page displaying their information, posts, visited and favorite countries.
-  - Users can change their profile information (name, nationality, about) and picture (with [Cloudinary](https://cloudinary.com/) integration).
+  - Profile details such as name, nationality, bio, and profile picture can be updated at any time.
 - **Countries Explorer:**  
-  - List of countries with details such as languages and currencies (using [REST Countries API](https://www.restcountries.com/)).
+  - Provides a comprehensive list of countries with key details including languages and currencies.
   - Users can mark these countries as visited, favorite, or wish to visit.
 - **Posts & Comments:**  
-  - Users can create, edit, and delete posts with images about their journeys.
-  - Every post has a comments section where users can react.
+  - Enables users to create, edit, and delete posts about their travel experiences, including the option to upload images.
+  - Each post features a comment section where other users can leave reactions.
 - **Pagination:**  
-  Paginated views for better navigation.
+  Implements paginated views to enhance content navigation and performance.
 - **Responsive UI:**  
-  Modern, responsive interface with dark mode support.
+  Features a modern, mobile-friendly interface with support for dark mode.
 
 ## Architecture 🏗️
 
 - **Frontend:** React.js (with React Router, Context API, and reusable components), Bootstrap 5.3, and CSS3.
 - **Backend:** Python Flask (RESTful API, and JWT authentication).
 - **Database:** SQLAlchemy (supports PostgreSQL, MySQL, and SQLite).
+- **Other Services:** [Cloudinary](https://cloudinary.com/) (for user image management), and [REST Countries API](https://www.restcountries.com/) (for details of countries).
 
 ## Main Folder Structure 🔎
 
@@ -78,7 +78,7 @@ npm run start
 - There are so many things you can do in this project, for instance:
   - Create new login methods using Firebase.
   - Include IA assistance as a feature.
-  - Improve alerts/messages' design.
+  - Enhance the design of alerts and messages to improve clarity, visibility, and overall user experience.
 - Use branches for your contributions and make clear and descriptive pull requests.
 - If you add a new dependency or key feature, remember to update this README.
 
