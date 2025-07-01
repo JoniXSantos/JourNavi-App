@@ -67,7 +67,7 @@ export const Profile = ({ dark }) => {
                                                     <div className="modal-body">
                                                         <ul className="list-unstyled text-start">
                                                             {user.visited_countries.length === 0 ? <li>No country on the list.</li> : ''}
-                                                            {countries.filter(c => user.visited_countries.includes(c.name)).map((country, index) => (
+                                                            {Array.isArray(countries) && countries.filter(c => user.visited_countries.includes(c.name)).map((country, index) => (
                                                                 <li key={index} className={`text-body ${dark ? 'text-white' : ''}`}>
                                                                     <div className="d-flex align-items-baseline">
                                                                         <img className="card-img-top me-2" src={country.flag} style={{ width: '25px' }} />
