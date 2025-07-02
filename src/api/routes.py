@@ -375,3 +375,20 @@ def comment(id):
     response_body['message'] = f'The comment no. {id} no longer exists'
     response_body['results'] = {}
     return response_body, 200
+
+
+@api.route('/test-api')
+def test_api():
+    try:
+        response = requests.get('https://restcountries.com/v3.1/all/', timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        return jsonify({
+            'success': True,
+            'countriesSample': data[:3] 
+        })
+    except requests.RequestException as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
