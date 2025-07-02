@@ -11,7 +11,6 @@ import re
 import cloudinary
 import cloudinary.uploader
 import requests
-import httpx
 
 
 api = Blueprint('api', __name__)
@@ -159,7 +158,7 @@ def countries():
     rows = db.session.execute(db.select(Countries)).scalars()
     result = [row.serialize() for row in rows]
     if len(result) == 0:
-        url = 'https://restcountries.com/v3.1/all/'
+        url = 'https://restcountries.com/v3.1/independent?status=true'
         response = requests.get(url)
         if response.status_code != 200:
             response_body['message'] = 'Error fetching data from REST Countries API'
@@ -376,40 +375,3 @@ def comment(id):
     response_body['message'] = f'The comment no. {id} no longer exists'
     response_body['results'] = {}
     return response_body, 200
-
-
-@api.route('/test-api')
-def test_api():
-    try:
-        with httpx.Client(timeout=5) as client:
-            response = client.get(
-                'https://restcountries.com/v3.1/all',
-                headers={
-                    'User-Agent': 'RenderTest/1.0',
-                    'Accept': 'application/json'
-                }
-            )
-            response.raise_for_status()
-            data = response.json()
-        return jsonify({
-            'success': True,
-            'countriesSample': data[:3]
-        })
-    except httpx.HTTPStatusError as e:
-        # Captura errores de status HTTP (como 400, 500)
-        return jsonify({
-            'success': False,
-            'error': f'Status error: {e.response.status_code}, Content: {e.response.text}'
-        }), 500
-    except httpx.RequestError as e:
-        # Problemas de conexión
-        return jsonify({
-            'success': False,
-            'error': f'Request error: {str(e)}'
-        }), 500
-    except Exception as e:
-        # Otros errores inesperados
-        return jsonify({
-            'success': False,
-            'error': f'Unexpected error: {str(e)}'
-        }), 500
