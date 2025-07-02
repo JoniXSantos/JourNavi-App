@@ -382,15 +382,34 @@ def comment(id):
 def test_api():
     try:
         with httpx.Client(timeout=5) as client:
-            response = client.get('https://restcountries.com/v3.1/all')
+            response = client.get(
+                'https://restcountries.com/v3.1/all',
+                headers={
+                    'User-Agent': 'RenderTest/1.0',
+                    'Accept': 'application/json'
+                }
+            )
             response.raise_for_status()
             data = response.json()
         return jsonify({
             'success': True,
             'countriesSample': data[:3]
         })
-    except httpx.RequestError as e:
+    except httpx.HTTPStatusError as e:
+        # Captura errores de status HTTP (como 400, 500)
         return jsonify({
             'success': False,
-            'error': str(e)
+            'error': f'Status error: {e.response.status_code}, Content: {e.response.text}'
+        }), 500
+    except httpx.RequestError as e:
+        # Problemas de conexión
+        return jsonify({
+            'success': False,
+            'error': f'Request error: {str(e)}'
+        }), 500
+    except Exception as e:
+        # Otros errores inesperados
+        return jsonify({
+            'success': False,
+            'error': f'Unexpected error: {str(e)}'
         }), 500
