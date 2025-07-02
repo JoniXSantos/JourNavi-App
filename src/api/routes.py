@@ -380,12 +380,16 @@ def comment(id):
 @api.route('/test-api')
 def test_api():
     try:
-        response = requests.get('https://restcountries.com/v3.1/all/', timeout=5)
+        response = requests.get(
+            'https://restcountries.com/v3.1/all',  # sin slash final
+            headers={'User-Agent': 'RenderTest/1.0'},
+            timeout=5
+        )
         response.raise_for_status()
         data = response.json()
         return jsonify({
             'success': True,
-            'countriesSample': data[:3] 
+            'countriesSample': data[:3]
         })
     except requests.RequestException as e:
         return jsonify({
