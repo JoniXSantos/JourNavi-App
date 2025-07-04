@@ -40,7 +40,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-        favicon: '4geeks.ico',
+        favicon: './src/front/img/JourNaviIcon.png',
         template: 'template.html'
     }),
     new Dotenv({ path: './src/front/.env', systemvars: true })
