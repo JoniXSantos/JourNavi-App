@@ -6,5 +6,5 @@ import { Outlet, Navigate } from "react-router-dom";
 export const ProtectedRoutes = () => {
     const { store } = useContext(Context);
 
-    return store.user ? <Outlet /> : <Navigate to="/login" />
+    return store.isLogged ? <Outlet /> : <Navigate to="/login" />
 }
