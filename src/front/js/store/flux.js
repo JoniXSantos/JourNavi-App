@@ -3,7 +3,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			message: null,
 			user: '',
-			isLogged: false,
+			isLogged: Boolean(localStorage.getItem('token')),
 			countries: [],
 			visitedCountries: [],
 			favoriteCountries: [],
@@ -56,13 +56,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				localStorage.setItem('user', JSON.stringify(data.results));
 				setStore({ isLogged: true, user: data.results });
 				return true;
-			},
-			isLogged: () => {
-				const token = localStorage.getItem('token');
-				if (token) {
-					const userData = JSON.parse(localStorage.getItem('user'));
-					setStore({ isLogged: true, user: userData })
-				};
 			},
 			logout: () => {
 				setStore({ isLogged: false, user: '' });
