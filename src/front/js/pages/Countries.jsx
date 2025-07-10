@@ -1,15 +1,37 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useMemo } from "react";
 import { Context } from "../store/appContext.js";
-
 
 export const Countries = ({ dark }) => {
     const { store, actions } = useContext(Context);
-    const user = store.user.id
-    const [countries, setCountries] = useState([...store.countries].sort((a, b) => a.name.localeCompare(b.name)));
+    const user = store.user.id;
+
+    const [filter, setFilter] = useState("all"); // 'all', 'toVisit', 'visited', 'favorite'
 
     useEffect(() => {
-                actions.getData(user);
-            }, []);
+        if (user) {
+            actions.getData(user);
+        }
+    }, [user]);
+
+    const countries = useMemo(() => {
+        let result = [...store.countries];
+
+        if (filter === "toVisit") {
+            result = result.filter(c => store.user.to_visit_countries.includes(c.name));
+        } else if (filter === "visited") {
+            result = result.filter(c => store.user.visited_countries.includes(c.name));
+        } else if (filter === "favorite") {
+            result = result.filter(c => store.user.favorite_countries.includes(c.name));
+        }
+
+        return result.sort((a, b) => a.name.localeCompare(b.name));
+    }, [
+        store.countries,
+        store.toVisitCountries,
+        store.visitedCountries,
+        store.favoriteCountries,
+        filter
+    ]);
 
     return (
         <div className="container mt-3">
@@ -21,10 +43,10 @@ export const Countries = ({ dark }) => {
                         Filter
                     </button>
                     <ul className="dropdown-menu dropdown-menu-dark w-100 text-center">
-                        <li onClick={() => setCountries(store.countries.filter(c => store.toVisitCountries.includes(c.name)).sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Wish to visit</span></li>
-                        <li onClick={() => setCountries(store.countries.filter(c => store.visitedCountries.includes(c.name)).sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Already visited</span></li>
-                        <li onClick={() => setCountries(store.countries.filter(c => store.favoriteCountries.includes(c.name)).sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Favorites</span></li>
-                        <li onClick={() => setCountries([...store.countries].sort((a, b) => a.name.localeCompare(b.name)))}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Clear</span></li>
+                        <li onClick={() => setFilter("toVisit")}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Wish to visit</span></li>
+                        <li onClick={() => setFilter("visited")}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Already visited</span></li>
+                        <li onClick={() => setFilter("favorite")}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Favorites</span></li>
+                        <li onClick={() => setFilter("all")}><span className="dropdown-item navbar-drop" style={{ cursor: 'pointer' }}>Clear</span></li>
                     </ul>
                 </div>
             </div>

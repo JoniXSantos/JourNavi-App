@@ -30,12 +30,11 @@ const injectContext = PassedComponent => {
 			store, instead use actions, like this:
 		*/
 		useEffect(() => {
-			if (state.store.isLogged) {
-				state.actions.getCountries();
-				state.actions.getUsers();
-				state.actions.getPosts();
-				state.actions.getComments();
-			}
+			state.actions.isLogged();
+			state.actions.getUsers();
+			state.actions.getCountries();
+			state.actions.getPosts();
+			state.actions.getComments();
 		}, []);
 
 		// The initial value for the context is not null anymore, but the current state of this component,
