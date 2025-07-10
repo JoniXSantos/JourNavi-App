@@ -183,7 +183,7 @@ def countries():
             result = [row.serialize() for row in rows]
     response_body['message'] = 'List of the countries (GET)'
     response_body['results'] = result
-    return response_body, 200
+    return jsonify(response_body), 200
 
 
 @api.route('/visited-countries', methods=['PATCH', 'DELETE'])

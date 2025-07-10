@@ -57,6 +57,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ isLogged: true, user: data.results });
 				return true;
 			},
+			isLogged: () => {
+				const token = localStorage.getItem('token');
+				if (token) {
+					const userData = JSON.parse(localStorage.getItem('user'));
+					setStore({ isLogged: true, user: userData })
+				};
+			},
 			logout: () => {
 				setStore({ isLogged: false, user: '' });
 				localStorage.removeItem('token');
@@ -68,10 +75,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'GET'
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				setStore({ users: data.results });
 				return data;
 			},
@@ -87,6 +95,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
 				const data = await response.json();
 				setStore({
@@ -200,10 +209,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'GET'
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				setStore({ countries: data.results });
 				return data;
 			},
@@ -219,12 +229,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({ country })
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
-				const updatedVisited = data.results.visited_countries;
-				setStore({ visitedCountries: updatedVisited });
+				const data = await response.json();
+				await getActions().getData(data.results.id);
 				return;
 			},
 			removeFromVisited: async (country) => {
@@ -239,12 +249,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({ country })
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
-				const updatedVisited = data.results.visited_countries;
-				setStore({ visitedCountries: updatedVisited });
+				const data = await response.json();
+				await getActions().getData(data.results.id);
 				return;
 			},
 			addToFavorites: async (country) => {
@@ -259,12 +269,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({ country })
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
-				const updatedFavorites = data.results.favorite_countries;
-				setStore({ favoriteCountries: updatedFavorites });
+				const data = await response.json();
+				await getActions().getData(data.results.id);
 				return;
 			},
 			removeFromFavorites: async (country) => {
@@ -279,12 +289,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({ country })
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
-				const updatedFavorites = data.results.favorite_countries;
-				setStore({ favoriteCountries: updatedFavorites });
+				const data = await response.json();
+				await getActions().getData(data.results.id);
 				return;
 			},
 			addToWishes: async (country) => {
@@ -299,12 +309,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({ country })
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
-				const updatedWishes = data.results.to_visit_countries;
-				setStore({ toVisitCountries: updatedWishes });
+				const data = await response.json();
+				await getActions().getData(data.results.id);
 				return;
 			},
 			removeFromWishes: async (country) => {
@@ -319,12 +329,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify({ country })
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
-				const updatedWishes = data.results.to_visit_countries;
-				setStore({ toVisitCountries: updatedWishes });
+				const data = await response.json();
+				await getActions().getData(data.results.id);
 				return;
 			},
 			getPosts: async () => {
@@ -333,10 +343,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'GET'
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				setStore({ posts: data.results });
 				return data;
 			},
@@ -370,10 +381,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				setStore({ images: [] });
 				getActions().getPosts();
 				return true;
@@ -384,10 +396,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'GET'
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				setStore({ currentPost: data.results });
 				return data.results;
 			},
@@ -401,10 +414,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				setStore({ currentPost: data.results });
 				getActions().getPosts();
 				return data.results;
@@ -415,10 +429,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'DELETE'
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				getActions().getPosts();
 				return true;
 			},
@@ -428,10 +443,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'GET'
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				setStore({ comments: data.results });
 				return data.results;
 			},
@@ -445,10 +461,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dataToSend)
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				getActions().getComments();
 				return data.results;
 			},
@@ -458,10 +475,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					method: 'DELETE'
 				};
 				const response = await fetch(uri, options);
-				const data = await response.json();
 				if (!response.ok) {
 					console.log('Error', response.status, response.statusText);
+					return;
 				};
+				const data = await response.json();
 				getActions().getComments();
 				return true;
 			}

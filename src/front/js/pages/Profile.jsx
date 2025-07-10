@@ -20,9 +20,9 @@ export const Profile = ({ dark }) => {
     const currentPosts = posts.slice().reverse().slice(firstPostIndex, lastPostIndex);
 
     useEffect(() => {
-        if (isCurrentUser) {
+        if (isCurrentUser && user && user.id) {
             actions.getData(user.id);
-        } else {
+        } else if (!isCurrentUser && id) {
             actions.getData(parseInt(id));
         }
     }, []);
@@ -54,8 +54,8 @@ export const Profile = ({ dark }) => {
                                 <div className="p-4 d-flex justify-content-end">
                                     <div className="d-flex justify-content-end text-center py-1 text-body me-5">
                                         <div data-bs-toggle="modal" data-bs-target="#visited">
-                                            <p className={`mb-1 h5 main-link ${dark ? 'text-white' : ''}`}>{user.visited_countries.length}</p>
-                                            <p className="small text-muted mb-0">Visited <br />{posts.length === 1 ? 'Country' : 'Countries'}</p>
+                                            <p className={`mb-1 h5 main-link ${dark ? 'text-white' : ''}`}>{user.visited_countries ? user.visited_countries.length : '0'}</p>
+                                            <p className="small text-muted mb-0">Visited <br />{posts && posts.length === 1 ? 'Country' : 'Countries'}</p>
                                         </div>
                                         <div className="modal fade" id="visited">
                                             <div className="modal-dialog">
@@ -66,7 +66,7 @@ export const Profile = ({ dark }) => {
                                                     </div>
                                                     <div className="modal-body">
                                                         <ul className="list-unstyled text-start">
-                                                            {user.visited_countries.length === 0 ? <li>No country on the list.</li> : ''}
+                                                            {user.visited_countries && user.visited_countries.length === 0 ? <li>No country on the list.</li> : ''}
                                                             {Array.isArray(countries) && countries.filter(c => user.visited_countries.includes(c.name)).map((country, index) => (
                                                                 <li key={index} className={`text-body ${dark ? 'text-white' : ''}`}>
                                                                     <div className="d-flex align-items-baseline">
@@ -84,7 +84,7 @@ export const Profile = ({ dark }) => {
                                     </div>
                                     <div className="d-flex justify-content-end text-center py-1 text-body me-3">
                                         <div>
-                                            <p className={`mb-1 h5 ${dark ? 'text-white' : ''}`}>{posts.length}</p>
+                                            <p className={`mb-1 h5 ${dark ? 'text-white' : ''}`}>{posts ? posts.length : '0'}</p>
                                             <p className="small text-muted mb-0">{posts.length === 1 ? 'Post' : 'Posts'}</p>
                                         </div>
                                     </div>
@@ -104,7 +104,7 @@ export const Profile = ({ dark }) => {
                                     </div>
                                     <div className="p-4 pb-1">
                                         <ul className="list-group list-group-flush">
-                                            {posts.length === 0 ? <p className="text-center"><strong>No posts yet.</strong></p> : currentPosts.map((item, index) => {
+                                            {posts && posts.length === 0 ? <p className="text-center"><strong>No posts yet.</strong></p> : currentPosts.map((item, index) => {
                                                 return (
                                                     <li key={index} className={`list-group-item d-flex justify-content-between ${dark ? 'bg-dark text-white' : 'bg-grayish'}`}>
                                                         <Link to={`/post/${item.id}`} className={`${dark ? 'link-style' : 'main-link'}`}>
@@ -119,7 +119,7 @@ export const Profile = ({ dark }) => {
                                     <Pagination
                                         currentPage={currentPage}
                                         setCurrentPage={setCurrentPage}
-                                        totalPosts={posts.length}
+                                        totalPosts={posts ? posts.length : 0}
                                         postsPerPage={postsPerPage}
                                         dark={dark}
                                     />
